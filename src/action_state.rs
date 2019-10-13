@@ -4,5 +4,4 @@ pub enum ActionState {
     PlayerAction(u8)
 }
 
-impl ActionState {
-}
+impl ActionState {}
