@@ -1368,7 +1368,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "java-game"
 version = "0.1.0"
 dependencies = [
+ "alga 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "amethyst 0.13.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "nalgebra 0.18.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "num 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
