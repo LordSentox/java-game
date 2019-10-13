@@ -1,12 +1,13 @@
+use crate::action_state::ActionState;
+use crate::player::CardTransferer;
+
 pub struct Player {
     name: String,
-    action_state: Option<ActionState>,
+    action_state: Option<ActionState>
 }
 
 impl Player {
-    pub fn collect_artefact(&mut self) -> bool {
-        unimplemented!()
-    }
+    pub fn collect_artefact(&mut self) -> bool { unimplemented!() }
 }
 
-impl CardTransferer for Player;
+impl CardTransferer for Player {}
