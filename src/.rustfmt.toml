@@ -1,0 +1,11 @@
+unstable_features = true
+
+fn_single_line = true
+control_brace_style = "ClosingNextLine"
+format_code_in_doc_comments = true
+newline_style = "Unix"
+struct_field_align_threshold = 5
+trailing_comma = "Never"
+use_field_init_shorthand = true
+use_try_shorthand = true
+wrap_comments = true
