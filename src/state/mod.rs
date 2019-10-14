@@ -10,7 +10,7 @@ pub use self::high_scores::*;
 pub mod main_menu;
 pub use self::main_menu::*;
 
-pub mod map_edior;
+pub mod map_editor;
 pub use self::map_editor::*;
 
 pub mod settings;
