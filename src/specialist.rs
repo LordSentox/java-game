@@ -2,7 +2,7 @@ use crate::map::Full as FullMap;
 use crate::math::Vec2;
 use crate::positionable::Positionable;
 
-pub trait Specialist: SpecialistInfo {
+pub trait Specialist: SpecialistInfo + Sync {
     fn can_act(&self, act_points: u8) -> bool { act_points != 0 }
 
     fn moves(&self, map: &FullMap, act_points: u8) -> Vec<Vec2<u8>> {

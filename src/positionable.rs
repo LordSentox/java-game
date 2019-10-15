@@ -1,3 +1,5 @@
+use crate::math::Vec2;
+
 pub trait Positionable {
     fn pos(&self) -> Vec2<u8>;
 
