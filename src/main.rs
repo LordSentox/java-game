@@ -9,7 +9,6 @@ mod direction;
 mod map;
 mod math;
 mod positionable;
-mod specialist;
 mod state;
 mod system;
 mod water_level;

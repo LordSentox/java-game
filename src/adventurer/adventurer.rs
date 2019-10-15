@@ -2,12 +2,12 @@ use crate::map::Full as FullMap;
 use crate::math::Vec2;
 use crate::positionable::Positionable;
 
-pub trait Specialist: SpecialistInfo + Send + Sync {
+pub trait Adventurer: AdventurerInfo + Send + Sync {
     fn can_act(&self, act_points: u8) -> bool { act_points != 0 }
 
     fn moves(&self, map: &FullMap, act_points: u8) -> Vec<Vec2<u8>> {
         if act_points != 0 {
-            SpecialistInfo::moves(self, &map)
+            AdventurerInfo::moves(self, &map)
         }
         else {
             Vec::new()
@@ -24,7 +24,7 @@ pub trait Specialist: SpecialistInfo + Send + Sync {
 
     fn drains(&self, map: &FullMap, act_points: u8) -> Vec<Vec2<u8>> {
         if act_points != 0 {
-            SpecialistInfo::drains(self, &map)
+            AdventurerInfo::drains(self, &map)
         }
         else {
             Vec::new()
@@ -35,7 +35,7 @@ pub trait Specialist: SpecialistInfo + Send + Sync {
 
     fn can_transfer_card(&self, other: &dyn Positionable, act_points: u8) -> bool {
         if act_points != 0 {
-            SpecialistInfo::can_transfer_cards(self, other)
+            AdventurerInfo::can_transfer_cards(self, other)
         }
         else {
             false
@@ -43,9 +43,9 @@ pub trait Specialist: SpecialistInfo + Send + Sync {
     }
 }
 
-/// Information about the specialist, that is known and true no matter the
+/// Information about the adventurer, that is known and true no matter the
 /// current action state, but not necessarily known at compile time.
-pub trait SpecialistInfo: Positionable {
+pub trait AdventurerInfo: Positionable {
     /// The normal movement set the adventurer can do. This usually does not
     /// have to be overwritten, since the normal movements should be the
     /// same.

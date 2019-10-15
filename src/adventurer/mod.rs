@@ -1,3 +1,6 @@
+pub mod adventurer;
+pub use self::adventurer::*;
+
 pub mod adventurer_type;
 pub use self::adventurer_type::*;
 
