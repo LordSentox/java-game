@@ -8,6 +8,7 @@ mod direction;
 mod map;
 mod math;
 mod player;
+mod positionable;
 mod specialist;
 mod state;
 mod system;

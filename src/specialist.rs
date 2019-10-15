@@ -1,38 +1,69 @@
 use crate::map::Full as FullMap;
 use crate::math::Vec2;
+use crate::positionable::Positionable;
 
-/// Trait implemented by adventurers, which have their own abilities the
-/// character representing them must know. The trait already contains the
-/// default implementations that any adventurer can perform.
-pub trait Specialist {
-    /// List of the moves the adventurer can perform from the provided position,
-    /// when they use their special ability.
-    fn special_moves(from: Vec2<u8>, map: &FullMap) -> Vec<Vec2<u8>> { Vec::new() }
+pub trait Specialist: SpecialistInfo {
+    fn can_act(&self, act_points: u8) -> bool { act_points != 0 }
 
-    /// Called when the character has moved. If something special should happen
-    /// to the adventurer afterwards, this must be implemented.
-    fn on_move(&mut self) {}
+    fn moves(&self, map: &FullMap, act_points: u8) -> Vec<Vec2<u8>> {
+        if act_points != 0 {
+            SpecialistInfo::moves(&self, &map)
+        }
+        else {
+            Vec::new()
+        }
+    }
 
-    /// Is set true, when the adventurer can move other adventurer's characters.
+    fn special_moves(&self, map: &FullMap, act_points: u8) -> Vec<Vec2<u8>> { Vec::new() }
+
+    fn on_move(&mut self, act_points: &mut u8) {}
+
+    fn can_move_other(&self, act_points: u8) -> bool { false }
+
+    fn on_move_other(&mut self, act_points: &mut u8) {}
+
+    fn drains(&self, map: &FullMap, act_points: u8) -> Vec<Vec2<u8>> {
+        if act_points != 0 {
+            SpecialistInfo::drains(&self, &map)
+        }
+        else {
+            Vec::new()
+        }
+    }
+
+    fn on_drain(&mut self, act_points: &mut u8) {}
+
+    fn can_transfer_card<T: Positionable>(&self, other: &T, act_points: u8) -> bool {
+        if act_points != 0 {
+            SpecialistInfo::can_transfer_cards(&self, &other)
+        }
+        else {
+            Vec::new()
+        }
+    }
+}
+
+pub trait SpecialistInfo: Positionable {
+    fn moves(&self, map: &FullMap) -> Vec<Vec2<u8>> {
+        self.pos()
+            .neighbours(map.limit_rect())
+            .iter()
+            .filter(|pos| map.is_standable(pos))
+            .collect()
+    }
+
+    fn special_moves(&self, map: &FullMap) -> Vec<Vec2<u8>> { Vec::new() }
+
     fn can_move_others() -> bool { false }
 
-    /// Called, after the adventurer has moved another player. Since only the
-    /// navigator can move others, this will only be implemented for them.
-    fn on_move_other(&mut self) {}
+    fn drains(&self, map: &FullMap) -> Vec<Vec2<u8>> {
+        let mut positions = self.pos().neighbours(map.limit_rect());
+        positions.push(self.pos());
+        positions
+            .iter()
+            .filter(|pos| map.is_standable(pos))
+            .collect()
+    }
 
-    /// List of the special positions the adventurer can drain, other than the
-    /// usual direct neighbours (up, down, left, right). If the adventurer
-    /// makes a special implementation of this function, these will not be
-    /// returned, only the new positions.
-    fn special_drains(from: Vec2<u8>) -> Vec<Vec2<u8>> { Vec::new() }
-
-    /// Called, after the adventurer has drained a tile. For most of the
-    /// adventurers, nothing will happen, but for instance for the engineer
-    /// this will handle the extra drain.
-    fn on_drain(&mut self) {}
-
-    /// Determines, if the adventurer can transfer from their current position
-    /// to a character at the other position. By default, they can only
-    /// transfer to characters on the same position as them.
-    fn can_transfer(pos: Vec2<u8>, other_pos: Vec2<u8>) { pos == other_pos }
+    fn can_transfer_cards<T: Positionable>(&self, other: &T) -> bool { self.pos() == other.pos() }
 }
