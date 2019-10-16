@@ -20,5 +20,5 @@ pub struct IslandTile {
 impl<T> Map<T> {
     pub fn limit_rect(&self) -> Rect<u8> { unimplemented!() }
 
-    pub fn is_standable(&self, pos: Vec2<u8>) -> bool { unimplemented!() }
+    pub fn is_standable(&self, _pos: Vec2<u8>) -> bool { unimplemented!() }
 }

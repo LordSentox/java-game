@@ -14,13 +14,13 @@ pub trait Adventurer: AdventurerInfo + Send + Sync {
         }
     }
 
-    fn special_moves(&self, map: &FullMap, act_points: u8) -> Vec<Vec2<u8>> { Vec::new() }
+    fn special_moves(&self, _map: &FullMap, _act_points: u8) -> Vec<Vec2<u8>> { Vec::new() }
 
-    fn on_move(&mut self, act_points: &mut u8) {}
+    fn on_move(&mut self, _act_points: &mut u8) {}
 
-    fn can_move_other(&self, act_points: u8) -> bool { false }
+    fn can_move_other(&self, _act_points: u8) -> bool { false }
 
-    fn on_move_other(&mut self, act_points: &mut u8) {}
+    fn on_move_other(&mut self, _act_points: &mut u8) {}
 
     fn drains(&self, map: &FullMap, act_points: u8) -> Vec<Vec2<u8>> {
         if act_points != 0 {
@@ -31,7 +31,7 @@ pub trait Adventurer: AdventurerInfo + Send + Sync {
         }
     }
 
-    fn on_drain(&mut self, act_points: &mut u8) {}
+    fn on_drain(&mut self, _act_points: &mut u8) {}
 
     fn can_transfer_card(&self, other: &dyn Positionable, act_points: u8) -> bool {
         if act_points != 0 {
@@ -62,7 +62,7 @@ pub trait AdventurerInfo: Positionable {
     /// The special move set of the adventurer. If the adventurer has a special
     /// ability that is not concerned with movement, the standard
     /// imlpmentation will suffice.
-    fn special_moves(&self, map: &FullMap) -> Vec<Vec2<u8>> { Vec::new() }
+    fn special_moves(&self, _map: &FullMap) -> Vec<Vec2<u8>> { Vec::new() }
 
     /// The position set the adventurer can drain from their current position.
     fn drains(&self, map: &FullMap) -> Vec<Vec2<u8>> {

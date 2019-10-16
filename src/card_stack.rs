@@ -10,7 +10,7 @@ impl<T> CardStack<T> {
 
     pub fn draw_card(&mut self) -> T { unimplemented!() }
 
-    pub fn discard_card(&mut self, card: T) { unimplemented!() }
+    pub fn discard_card(&mut self, _card: T) { unimplemented!() }
 
     pub fn shuffle_back(&mut self) { unimplemented!() }
 }

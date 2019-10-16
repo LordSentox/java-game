@@ -7,7 +7,7 @@ use crate::character::Character;
 pub struct MoveNormal {}
 
 impl<'a> System<'a> for MoveNormal {
-    type SystemData = (WriteStorage<'a, Character>);
+    type SystemData = WriteStorage<'a, Character>;
 
-    fn run(&mut self, (mut characters): Self::SystemData) { unimplemented!() }
+    fn run(&mut self, mut _characters: Self::SystemData) { unimplemented!() }
 }
