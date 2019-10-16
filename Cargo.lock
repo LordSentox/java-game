@@ -1370,8 +1370,17 @@ version = "0.1.0"
 dependencies = [
  "alga 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "amethyst 0.13.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "java-game-derive 0.1.0",
  "nalgebra 0.18.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "num 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "java-game-derive"
+version = "0.1.0"
+dependencies = [
+ "quote 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 1.0.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

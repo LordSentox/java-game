@@ -1,6 +1,7 @@
 use crate::math::Vec2;
+use crate::positionable::Positionable;
 
-impl_pos!(Courier, pos);
+#[derive(Positionable)]
 pub struct Courier {
     pos: Vec2<u8>
 }

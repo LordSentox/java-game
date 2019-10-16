@@ -9,6 +9,7 @@ edition = "2018"
 [dependencies]
 alga = "0.9.1"
 amethyst = "0.13.0"
+java-game-derive = { path = "java-game-derive" }
 nalgebra = "0.18.1"
 num = "0.2.0"
 
