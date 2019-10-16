@@ -2,7 +2,9 @@ extern crate proc_macro;
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{export::Span, parse_macro_input, Attribute, DeriveInput, Ident};
+use syn::{
+    export::Span, parse_macro_input, Attribute, DeriveInput, Ident, Lit, Meta, MetaNameValue
+};
 
 #[proc_macro_derive(Positionable, attributes(PosField))]
 pub fn positionable_derive(input: TokenStream) -> TokenStream {
@@ -10,6 +12,9 @@ pub fn positionable_derive(input: TokenStream) -> TokenStream {
 
     let name = input.ident;
     let pos_field = parse_pos_field(input.attrs);
+
+    // TODO: Check if the struct contains the field specified, to give better error
+    // TODO  messages
 
     let gen = quote! {
         impl Positionable for #name {
@@ -22,6 +27,19 @@ pub fn positionable_derive(input: TokenStream) -> TokenStream {
 }
 
 fn parse_pos_field(attrs: Vec<Attribute>) -> Ident {
-    // TODO: Actually parse the ident instead of always using pos
+    for attr in attrs.iter() {
+        if attr.path.is_ident("PosField") {
+            match attr.parse_meta() {
+                Ok(Meta::NameValue(MetaNameValue {
+                    lit: Lit::Str(pos_field),
+                    ..
+                })) => {
+                    return Ident::new(&pos_field.value(), Span::call_site());
+                }
+                _ => {}
+            }
+        }
+    }
+
     Ident::new("pos", Span::call_site())
 }
