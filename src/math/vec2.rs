@@ -1,6 +1,6 @@
-use alga::general::{Additive, ClosedAdd, ClosedSub, Identity};
+use alga::general::{Additive, ClosedAdd, ClosedSub, Identity, Multiplicative};
 use nalgebra::{RealField, Scalar};
-use num::Integer;
+use num::{CheckedAdd, CheckedSub, Integer};
 use std::cmp::Ordering;
 use std::ops::{Add, AddAssign, Div, Mul, Sub, SubAssign};
 
@@ -64,16 +64,71 @@ impl<T: Scalar> Vec2<T> {
 
     pub fn neighbours(&self, limits: Option<Rect<T>>) -> Vec<Self>
     where
-        T: Integer
+        T: Integer + CheckedAdd + CheckedSub + Identity<Additive> + Identity<Multiplicative>
     {
-        unimplemented!()
+        // TODO: Make this nicer, more succinct
+        let mut neighbours = Vec::with_capacity(4);
+
+        // Right
+        if let Some(x) = self.x.checked_add(&nalgebra::one()) {
+            neighbours.push(Vec2::from_values(x, self.y));
+        }
+        // Left
+        if let Some(x) = self.x.checked_sub(&nalgebra::one()) {
+            neighbours.push(Vec2::from_values(x, self.y));
+        }
+        // Down
+        if let Some(y) = self.y.checked_add(&nalgebra::one()) {
+            neighbours.push(Vec2::from_values(self.x, y));
+        }
+        // Up
+        if let Some(y) = self.y.checked_sub(&nalgebra::one()) {
+            neighbours.push(Vec2::from_values(self.x, y));
+        }
+
+        retain_inside_limits(neighbours, limits)
     }
 
     pub fn surrounding(&self, limits: Option<Rect<T>>) -> Vec<Self>
     where
-        T: Integer
+        T: Integer + CheckedAdd + CheckedSub + Identity<Additive> + Identity<Multiplicative>
     {
-        unimplemented!()
+        // TODO: Make this nicer, more succinct
+        let mut surrounding = Vec::with_capacity(8);
+
+        // Up+Right
+        if let (Some(x), Some(y)) = (
+            self.x.checked_add(&nalgebra::one()),
+            self.y.checked_sub(&nalgebra::one())
+        ) {
+            surrounding.push(Vec2::from_values(x, y));
+        }
+        // Up+Left
+        if let (Some(x), Some(y)) = (
+            self.x.checked_sub(&nalgebra::one()),
+            self.y.checked_sub(&nalgebra::one())
+        ) {
+            surrounding.push(Vec2::from_values(x, y));
+        }
+        // Down+Left
+        if let (Some(x), Some(y)) = (
+            self.x.checked_sub(&nalgebra::one()),
+            self.y.checked_add(&nalgebra::one())
+        ) {
+            surrounding.push(Vec2::from_values(x, y));
+        }
+        // Down+Right
+        if let (Some(x), Some(y)) = (
+            self.x.checked_add(&nalgebra::one()),
+            self.y.checked_add(&nalgebra::one())
+        ) {
+            surrounding.push(Vec2::from_values(x, y));
+        }
+
+        surrounding = retain_inside_limits(surrounding, limits);
+        surrounding.append(&mut self.neighbours(limits));
+
+        surrounding
     }
 }
 
@@ -178,4 +233,28 @@ where
     else {
         b - a
     }
+}
+
+// Helper function that removes all points inside the vector that are not
+// contained inside the optional limit Rect
+fn retain_inside_limits<T: 'static>(items: Vec<Vec2<T>>, limits: Option<Rect<T>>) -> Vec<Vec2<T>>
+where
+    T: PartialOrd + std::fmt::Debug + Copy + Add<Output = T>
+{
+    // Fast return in case there are no limits
+    if limits.is_none() {
+        return items;
+    }
+    let limits = limits.unwrap();
+
+    // Retain only items that are within the bounds of the limits rect
+    items
+        .into_iter()
+        .filter(|v| {
+            v.x >= limits.x
+                && v.x <= limits.x + limits.w
+                && v.y >= limits.y
+                && v.y <= limits.y + limits.h
+        })
+        .collect()
 }
