@@ -1,3 +1,7 @@
+//! Water level determines how many islands are flooded in the flood card
+//! drawing phase. The beginning water level is the primary tool of setting the
+//! difficulty of the game.
+
 use std::ops::{Add, AddAssign};
 use std::u8;
 

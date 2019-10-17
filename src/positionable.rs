@@ -1,5 +1,9 @@
+//! Items that can be placed on a map, either full or black and white should
+//! implement the [Positionable](crate::positionable::Positionable) trait.
+
 use crate::map::FieldPos;
 
+/// The item can be placed on a map.
 pub trait Positionable {
     fn pos(&self) -> FieldPos;
 
