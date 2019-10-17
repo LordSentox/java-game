@@ -1,3 +1,9 @@
+//! # The courier adventurer
+//!
+//! # Special ability
+//! The courier can transfer a transferable card to any player, regardless of
+//! their respective positions.
+
 use crate::math::Vec2;
 use crate::positionable::Positionable;
 
