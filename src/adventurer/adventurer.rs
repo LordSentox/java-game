@@ -1,7 +1,17 @@
+//! Traits that describe the actions an Adventurer can take that may be unique
+//! to them.
+
 use crate::map::Full as FullMap;
 use crate::math::Vec2;
 use crate::positionable::Positionable;
 
+/// The specific actions an adventurer can take, also taking the current state
+/// of the turn into account. The standard implementation is usually just the
+/// [AdventurerInfo] trait's implementation if there are action points left or
+/// nothing/false if they are zero.
+///
+/// For the specific implementations, please see the corresponding adventurer's
+/// module for further information.
 pub trait Adventurer: AdventurerInfo + Send + Sync {
     fn can_act(&self, act_points: u8) -> bool { act_points != 0 }
 
@@ -14,7 +24,7 @@ pub trait Adventurer: AdventurerInfo + Send + Sync {
         }
     }
 
-    fn special_moves(&self, _map: &FullMap, _act_points: u8) -> Vec<Vec2<u8>> { Vec::new() }
+    fn special_moves(&self, _map: &FullMap, _act_points: u8) -> Vec<Vec2<u8>> { unimplemented!() }
 
     fn on_move(&mut self, _act_points: &mut u8) {}
 
@@ -61,7 +71,7 @@ pub trait AdventurerInfo: Positionable {
 
     /// The special move set of the adventurer. If the adventurer has a special
     /// ability that is not concerned with movement, the standard
-    /// imlpmentation will suffice.
+    /// implementation will suffice.
     fn special_moves(&self, _map: &FullMap) -> Vec<Vec2<u8>> { Vec::new() }
 
     /// The position set the adventurer can drain from their current position.

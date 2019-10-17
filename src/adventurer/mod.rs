@@ -1,3 +1,7 @@
+//! This module contains the implementation of the adventurers embarking on the
+//! forbidden island. There are six in the standard game. For information on how
+//! they work, please see the corresponding adventurer's module.
+
 pub mod adventurer;
 pub use self::adventurer::*;
 
