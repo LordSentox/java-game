@@ -25,5 +25,7 @@ impl Diver {
 impl Adventurer for Diver {}
 
 impl AdventurerInfo for Diver {
+    /// The diving move set on the map. Returns all positions the Diver can dive
+    /// to and stand on after the action.
     fn special_moves(&self, _map: &FullMap) -> Vec<Vec2<u8>> { unimplemented!() }
 }

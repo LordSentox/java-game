@@ -22,5 +22,6 @@ impl Explorer {
 impl Adventurer for Explorer {}
 
 impl AdventurerInfo for Explorer {
+    /// Returns the diagonal movement set of the explorer.
     fn special_moves(&self, _map: &FullMap) -> Vec<Vec2<u8>> { unimplemented!() }
 }

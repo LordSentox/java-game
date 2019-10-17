@@ -24,5 +24,7 @@ impl Pilot {
 impl Adventurer for Pilot {}
 
 impl AdventurerInfo for Pilot {
+    /// The pilot may fly anywhere on the map where they can stand when they use
+    /// their special ability.
     fn special_moves(&self, _map: &FullMap) -> Vec<Vec2<u8>> { unimplemented!() }
 }

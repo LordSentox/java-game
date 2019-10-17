@@ -23,9 +23,18 @@ impl Navigator {
 }
 
 impl Adventurer for Navigator {
+    /// The navigator may move another adventurer when they have an action point
+    /// left, or if there has been a push immediately before which already
+    /// cost an action point.
     fn can_move_other(&self, _act_points: u8) -> bool { unimplemented!() }
 
+    /// When someone is moved, either an action point is spent or there is no
+    /// extra move anymore.
     fn on_move_other(&mut self, _act_points: &mut u8) { unimplemented!() }
+
+    /// If any extra movement of another adventurer was possible, it is reset
+    /// when the navigator moves.
+    fn on_move(&mut self, _act_points: &mut u8) { unimplemented!() }
 }
 
 impl AdventurerInfo for Navigator {}
