@@ -33,7 +33,7 @@ impl Adventurer for Navigator {
 
     /// If any extra movement of another adventurer was possible, it is reset
     /// when the navigator moves.
-    fn on_move(&mut self, _act_points: &mut u8) { unimplemented!() }
+    fn on_move(&mut self) { unimplemented!() }
 }
 
 impl AdventurerInfo for Navigator {}

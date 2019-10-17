@@ -22,7 +22,7 @@ impl Engineer {
 impl Adventurer for Engineer {
     /// If the engineer moves, they may not drain a second tile without spending
     /// an extra action point.
-    fn on_move(&mut self, _act_points: &mut u8) { unimplemented!() }
+    fn on_move(&mut self) { unimplemented!() }
 
     /// Instead of always costing an action point. If for the last drain action
     /// an action point was already consumed, the action points remain
