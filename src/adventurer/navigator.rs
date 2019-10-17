@@ -8,12 +8,11 @@
 //! ability while they are being navigated.
 
 use super::{Adventurer, AdventurerInfo};
-use crate::math::Vec2;
 use crate::positionable::Positionable;
 
 #[derive(Positionable)]
 pub struct Navigator {
-    pos: Vec2<u8>
+    pos: FieldPos
 }
 
 impl Navigator {

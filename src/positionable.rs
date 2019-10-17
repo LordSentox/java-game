@@ -1,9 +1,9 @@
-use crate::math::Vec2;
+use crate::map::FieldPos;
 
 pub trait Positionable {
-    fn pos(&self) -> Vec2<u8>;
+    fn pos(&self) -> FieldPos;
 
-    fn set_pos(&mut self, pos: Vec2<u8>);
+    fn set_pos(&mut self, pos: FieldPos);
 }
 
 #[cfg(test)]
@@ -14,16 +14,16 @@ mod tests {
     fn derive_default_pos() {
         #[derive(Positionable)]
         struct Foo {
-            pos: Vec2<u8>
+            pos: FieldPos
         }
 
         let mut foo = Foo {
-            pos: Vec2::from_values(4, 3)
+            pos: FieldPos::from_values(4, 3)
         };
 
-        assert_eq!(Vec2::from_values(4, 3), foo.pos());
-        foo.set_pos(Vec2::from_values(3, 37));
-        assert_eq!(Vec2::from_values(3, 37), foo.pos());
+        assert_eq!(FieldPos::from_values(4, 3), foo.pos());
+        foo.set_pos(FieldPos::from_values(3, 37));
+        assert_eq!(FieldPos::from_values(3, 37), foo.pos());
     }
 
     #[test]
@@ -31,15 +31,15 @@ mod tests {
         #[derive(Positionable)]
         #[PosField = "el_positione"]
         struct Foo {
-            el_positione: Vec2<u8>
+            el_positione: FieldPos
         }
 
         let mut foo = Foo {
-            el_positione: Vec2::from_values(2, 2)
+            el_positione: FieldPos::from_values(2, 2)
         };
 
-        assert_eq!(Vec2::from_values(2, 2), foo.pos());
-        foo.set_pos(Vec2::from_values(0, 75));
-        assert_eq!(Vec2::from_values(0, 75), foo.pos());
+        assert_eq!(FieldPos::from_values(2, 2), foo.pos());
+        foo.set_pos(FieldPos::from_values(0, 75));
+        assert_eq!(FieldPos::from_values(0, 75), foo.pos());
     }
 }

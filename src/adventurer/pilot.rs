@@ -7,12 +7,11 @@
 
 use super::{Adventurer, AdventurerInfo};
 use crate::map::Full as FullMap;
-use crate::math::Vec2;
 use crate::positionable::Positionable;
 
 #[derive(Positionable)]
 pub struct Pilot {
-    pos: Vec2<u8>
+    pos: FieldPos
 }
 
 impl Pilot {
@@ -26,5 +25,5 @@ impl Adventurer for Pilot {}
 impl AdventurerInfo for Pilot {
     /// The pilot may fly anywhere on the map where they can stand when they use
     /// their special ability.
-    fn special_moves(&self, _map: &FullMap) -> Vec<Vec2<u8>> { unimplemented!() }
+    fn special_moves(&self, _map: &FullMap) -> Vec<FieldPos> { unimplemented!() }
 }

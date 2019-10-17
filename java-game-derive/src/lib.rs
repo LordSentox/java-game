@@ -17,9 +17,11 @@ pub fn positionable_derive(input: TokenStream) -> TokenStream {
     // TODO  messages
 
     let gen = quote! {
+        use crate::map::FieldPos;
+
         impl Positionable for #name {
-            fn pos(&self) -> Vec2<u8> { self.#pos_field }
-            fn set_pos(&mut self, pos: Vec2<u8>) { self.#pos_field = pos }
+            fn pos(&self) -> FieldPos { self.#pos_field }
+            fn set_pos(&mut self, pos: FieldPos) { self.#pos_field = pos }
         }
     };
 

@@ -5,12 +5,11 @@
 
 use super::{Adventurer, AdventurerInfo};
 use crate::map::Full as FullMap;
-use crate::math::Vec2;
 use crate::positionable::Positionable;
 
 #[derive(Positionable)]
 pub struct Explorer {
-    pos: Vec2<u8>
+    pos: FieldPos
 }
 
 impl Explorer {
@@ -23,5 +22,5 @@ impl Adventurer for Explorer {}
 
 impl AdventurerInfo for Explorer {
     /// Returns the diagonal movement set of the explorer.
-    fn special_moves(&self, _map: &FullMap) -> Vec<Vec2<u8>> { unimplemented!() }
+    fn special_moves(&self, _map: &FullMap) -> Vec<FieldPos> { unimplemented!() }
 }

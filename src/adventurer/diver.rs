@@ -8,12 +8,11 @@
 
 use super::{Adventurer, AdventurerInfo};
 use crate::map::Full as FullMap;
-use crate::math::Vec2;
 use crate::positionable::Positionable;
 
 #[derive(Positionable)]
 pub struct Diver {
-    pos: Vec2<u8>
+    pos: FieldPos
 }
 
 impl Diver {
@@ -27,5 +26,5 @@ impl Adventurer for Diver {}
 impl AdventurerInfo for Diver {
     /// The diving move set on the map. Returns all positions the Diver can dive
     /// to and stand on after the action.
-    fn special_moves(&self, _map: &FullMap) -> Vec<Vec2<u8>> { unimplemented!() }
+    fn special_moves(&self, _map: &FullMap) -> Vec<FieldPos> { unimplemented!() }
 }
