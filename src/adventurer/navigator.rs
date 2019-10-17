@@ -7,6 +7,7 @@
 //! action in between. The moved players may not use any special movement
 //! ability while they are being navigated.
 
+use super::{Adventurer, AdventurerInfo};
 use crate::math::Vec2;
 use crate::positionable::Positionable;
 

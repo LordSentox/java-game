@@ -6,9 +6,10 @@
 //! Down, Left, Right) until they land on the island tile they want to end or
 //! the first non-flooded non-gone tile.
 
+use super::{Adventurer, AdventurerInfo};
+use crate::map::Full as FullMap;
 use crate::math::Vec2;
 use crate::positionable::Positionable;
-use super::{Adventurer + AdventurerInfo};
 
 #[derive(Positionable)]
 pub struct Diver {
@@ -24,5 +25,5 @@ impl Diver {
 impl Adventurer for Diver {}
 
 impl AdventurerInfo for Diver {
-    fn special_moves(&self) -> Vec<Vec2<u8>> { unimplemented!() }
+    fn special_moves(&self, _map: &FullMap) -> Vec<Vec2<u8>> { unimplemented!() }
 }

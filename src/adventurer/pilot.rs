@@ -5,10 +5,10 @@
 //! fild they like. Unlike with a helicopter card, they may not take anybody
 //! with them.
 
+use super::{Adventurer, AdventurerInfo};
+use crate::map::Full as FullMap;
 use crate::math::Vec2;
 use crate::positionable::Positionable;
-
-use super::{Adventurer, AdventurerInfo};
 
 #[derive(Positionable)]
 pub struct Pilot {
@@ -23,4 +23,6 @@ impl Pilot {
 
 impl Adventurer for Pilot {}
 
-impl AdventurerInfo for Pilot {}
+impl AdventurerInfo for Pilot {
+    fn special_moves(&self, _map: &FullMap) -> Vec<Vec2<u8>> { unimplemented!() }
+}
