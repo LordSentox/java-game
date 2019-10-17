@@ -3,7 +3,8 @@ addons:
   apt:
     packages:
       - libasound2-dev
-      - libxcb
+      - libxcb-shape0-dev
+      - libxcb-xfixes0-dev
 rust:
   - stable
   - beta
