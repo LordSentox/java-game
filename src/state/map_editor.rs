@@ -1,5 +1,6 @@
 use amethyst::prelude::*;
 
+/// The state representing the map editor
 pub struct MapEditor {}
 
 impl SimpleState for MapEditor {
