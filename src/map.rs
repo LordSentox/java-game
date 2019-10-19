@@ -1,6 +1,7 @@
 //! Mapse contain the playing field of adventure island.
 
 use crate::math::{Rect, Vec2};
+use std::ops::{Deref, DerefMut};
 
 /// Mapse, that can be played on contain 24 unique island tiles.
 pub type Full = Map<IslandTile>;
@@ -52,4 +53,14 @@ impl<T> Map<T> {
     /// provided, which means it returns false in case there is no island
     /// tile or it's gone.
     pub fn is_standable(&self, _pos: FieldPos) -> bool { unimplemented!() }
+}
+
+impl<T> Deref for Map<T> {
+    type Target = Vec<Vec<Option<T>>>;
+
+    fn deref(&self) -> &Self::Target { &self.tiles }
+}
+
+impl<T> DerefMut for Map<T> {
+    fn deref_mut(&mut self) -> &mut Self::Target { &mut self.tiles }
 }
