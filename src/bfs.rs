@@ -5,6 +5,7 @@ use crate::flat_2dvec;
 use crate::map::{BlackWhite as BlackWhiteMap, FieldPos};
 use crate::math::{Rect, Vec2};
 
+#[derive(Debug)]
 pub enum Error {
     UnavailableStartingPosition
 }
@@ -124,7 +125,20 @@ where
         for (pos, e) in &mut marked_flat {
             // Look in the four primary directions
             for nb in pos.neighbours(limits) {
-                let to_assign = marker((*pos, e), (nb, &data[nb.y][nb.x]));
+                let data_point = {
+                    if let Some(line) = data.get(nb.y) {
+                        if let Some(e) = line.get(nb.x) {
+                            e
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                    else {
+                        break;
+                    }
+                };
+                let to_assign = marker((*pos, e), (nb, data_point));
                 if to_assign != **e {
                     **e = to_assign;
                     something_changed = true;
@@ -150,4 +164,43 @@ where
     }
 
     Ok(out_map)
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn bfs_cross_no_start_point() {
+        let data = vec![
+            vec![None, None, Some(1)],
+            vec![None, Some(2), Some(3), Some(4), None, None],
+            vec![None, None, Some(5), None],
+        ];
+
+        let bfs = bfs(
+            &data,
+            None,
+            true,
+            None,
+            |_, (_, tile)| {
+                if let Some(_) = tile {
+                    Some(true)
+                }
+                else {
+                    None
+                }
+            },
+            |_, marker| if let Some(true) = marker { true } else { false }
+        )
+        .unwrap();
+
+        let expected = vec![
+            vec![false, false, true],
+            vec![false, true, true, true, false, false],
+            vec![false, false, true, false],
+        ];
+
+        assert_eq!(expected, bfs);
+    }
 }
