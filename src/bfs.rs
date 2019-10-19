@@ -1,7 +1,7 @@
 //! Implementation of a special Breadth First Search algorithm specialised on
 //! the applications in the forbidden island.
 
-use crate::iter_2d::Iter2d;
+use crate::flat_2dvec;
 use crate::math::{Rect, Vec2};
 
 pub enum Error {
@@ -23,16 +23,16 @@ pub enum Error {
 pub fn bfs<D, O, M, F, G>(
     data: &Vec<Vec<Option<D>>>,
     start_pos: Option<Vec2<usize>>,
-    start_marker: Option<M>,
+    start_marker: M,
     limits: Option<Rect<usize>>,
     marker: F,
     output: G
-) -> Result<Vec<Vec<O>>, Error>
+) -> Result<Vec<Vec<Option<O>>>, Error>
 where
     O: Clone,
-    M: Clone,
+    M: Clone + PartialEq,
     F: Fn((Vec2<usize>, &Option<M>), (Vec2<usize>, &Option<D>)) -> Option<M>,
-    G: Fn(Vec2<usize>, &Option<D>) -> Option<O>
+    G: Fn(Vec2<usize>, &Option<M>) -> Option<O>
 {
     // Set the starting position or find a possible starting position
     let start_pos = match start_pos {
@@ -40,7 +40,10 @@ where
         None => {
             // Find a non-None item in the 2d-vector. This must exist, otherwise it is an
             // error.
-            match Iter2d::new(&data).find(|(_, e)| e.is_some()) {
+            match flat_2dvec::flatten(data)
+                .into_iter()
+                .find(|(_, e)| e.is_some())
+            {
                 Some((pos, _)) => pos,
                 None => return Err(Error::UnavailableStartingPosition)
             }
@@ -49,25 +52,45 @@ where
 
     // Create the marking working Vector and mark the starting position
     let mut marked: Vec<Vec<Option<M>>> = create_none_vec_with_sizes(&data);
-    marked[start_pos.y][start_pos.x] = start_marker;
+    marked[start_pos.y][start_pos.x] = Some(start_marker);
 
-    // Mark all places reachable from the starting position with the marking
-    // function.
-    loop {
-        let mut something_changed = false;
+    {
+        let mut marked_flat = flat_2dvec::flatten_mut(&mut marked);
 
-        for (pos, e) in Iter2d::new(&marked) {
-            for nb in pos.neighbours(limits) {
-                let to_assign = marker((pos, e), (nb, &data[nb.y][nb.x]));
+        // Mark all places reachable from the starting position with the marking
+        // function.
+        loop {
+            let mut something_changed = false;
+
+            // Go through the map and mark all positions that result from the marking of the
+            // last iteration.
+            for (pos, e) in &mut marked_flat {
+                // Look in the four primary directions
+                for nb in pos.neighbours(limits) {
+                    let to_assign = marker((*pos, e), (nb, &data[nb.y][nb.x]));
+                    if to_assign != **e {
+                        **e = to_assign;
+                        something_changed = true;
+                    }
+                }
             }
-        }
 
-        if !something_changed {
-            break;
+            // If nothing changed in an iteration, it will in no further iteration, so the
+            // bfs is done.
+            if !something_changed {
+                break;
+            }
         }
     }
 
-    unimplemented!()
+    let marked_flat = flat_2dvec::flatten(&marked);
+
+    let mut out_map = create_none_vec_with_sizes(&marked);
+    for (pos, e) in marked_flat {
+        out_map[pos.y][pos.x] = output(pos, e);
+    }
+
+    Ok(out_map)
 }
 
 // Helper function to create a two-dimensional array, with the same amount of
