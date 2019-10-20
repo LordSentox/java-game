@@ -1,5 +1,6 @@
 use amethyst::prelude::*;
 
+/// The state representing the main menu
 pub struct MainMenu {}
 
 impl SimpleState for MainMenu {

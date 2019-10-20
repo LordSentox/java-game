@@ -1,3 +1,5 @@
+//! The module containing all states, the game can be in
+
 pub mod game;
 pub use self::game::*;
 
