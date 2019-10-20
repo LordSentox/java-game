@@ -6,7 +6,7 @@
 //! with them.
 
 use super::{Adventurer, AdventurerInfo};
-use crate::map::{Full as FullMap, FieldPos};
+use crate::map::Full as FullMap;
 use crate::positionable::Positionable;
 
 #[derive(Positionable)]
