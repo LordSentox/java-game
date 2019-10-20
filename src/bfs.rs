@@ -113,8 +113,6 @@ where
     }
     marked[start_pos.y][start_pos.x] = Some(start_marker);
 
-    let mut marked_flat = flat_2dvec::flatten_mut(&mut marked);
-
     // Mark all places reachable from the starting position with the marking
     // function.
     loop {
@@ -122,26 +120,29 @@ where
 
         // Go through the map and mark all positions that result from the marking of the
         // last iteration.
-        for (pos, e) in &mut marked_flat {
-            // Look in the four primary directions
-            for nb in pos.neighbours(limits) {
-                let data_point = {
-                    if let Some(line) = data.get(nb.y) {
-                        if let Some(e) = line.get(nb.x) {
-                            e
+        for y in 0..marked.len() {
+            for x in 0..marked[y].len() {
+                let pos = Vec2::from_values(x, y);
+                // Look in the four primary directions
+                for nb in pos.neighbours(limits) {
+                    let target_point_data = {
+                        if let Some(line) = data.get(nb.y) {
+                            if let Some(e) = line.get(nb.x) {
+                                e
+                            }
+                            else {
+                                break;
+                            }
                         }
                         else {
                             break;
                         }
+                    };
+                    let to_assign = marker((pos, &marked[y][x]), (nb, target_point_data));
+                    if to_assign != marked[nb.y][nb.x] {
+                        marked[nb.y][nb.x] = to_assign;
+                        something_changed = true;
                     }
-                    else {
-                        break;
-                    }
-                };
-                let to_assign = marker((*pos, e), (nb, data_point));
-                if to_assign != **e {
-                    **e = to_assign;
-                    something_changed = true;
                 }
             }
         }
