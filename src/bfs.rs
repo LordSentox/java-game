@@ -112,7 +112,7 @@ where
                     };
                     let to_assign =
                         marker((pos, &marked.get(pos).unwrap()), (nb, target_point_data));
-                    if &to_assign != marked.get(nb).unwrap() {
+                    if to_assign.is_some() && &to_assign != marked.get(nb).unwrap() {
                         marked.set(nb, to_assign);
                         something_changed = true;
                     }

@@ -59,6 +59,14 @@ pub struct IslandTile {
     state: IslandTileState
 }
 
+impl IslandTile {
+    pub fn new() -> Self {
+        Self {
+            state: IslandTileState::Dry
+        }
+    }
+}
+
 impl<T> Map<T> {
     /// Create a new Map and fill its contents with the fill_value.
     pub fn new(size: Vec2<u8>, fill_value: T) -> Self
@@ -156,6 +164,7 @@ impl MapExt for Full {
     }
 
     fn limit_rect(&self) -> Rect<u8> {
+        // Find the minimum rectangular hull around the island tiles and return it.
         let mut min_pos = FieldPos::new();
         let mut max_pos = FieldPos::new();
 
@@ -188,6 +197,8 @@ impl MapExt for BlackWhite {
     }
 
     fn limit_rect(&self) -> Rect<u8> {
+        // Find the minimum rectangular hull around all true tiles (island tiles) and
+        // return it.
         let mut min_pos = FieldPos::new();
         let mut max_pos = FieldPos::new();
 
