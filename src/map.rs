@@ -26,6 +26,12 @@ pub struct Map<T> {
 }
 
 pub trait MapExt {
+    /// Get the [Rect](Rect<u8>) this map is bounded by, meaning that beyond it,
+    /// there is only water and therefore it is considered out of bounds for
+    /// anything that is placeable on the island. Does not mean all tiles
+    /// inside it are island tiles, since not all maps are rectangular.
+    fn limit_rect(&self) -> Rect<u8>;
+
     /// Checks, if a positionable object may be placed on the [FieldPos]
     /// provided, which means it returns false in case there is no island
     /// tile or it's gone.
@@ -64,15 +70,16 @@ impl<T> Map<T> {
         }
     }
 
-    /// Get the [Rect](Rect<u8>) this map is bounded by, meaning that beyond it,
-    /// there is only water and therefore it is considered out of bounds for
-    /// anything that is placeable on the island. Does not mean all tiles
-    /// inside it are island tiles, since not all maps are rectangular.
-    pub fn limit_rect(&self) -> Rect<u8> { unimplemented!() }
-
     /// Get the item at the provided position of the map or `None`, if there is
     /// no item at the position.
-    pub fn get(&self, _pos: FieldPos) -> Option<&T> { unimplemented!() }
+    pub fn get(&self, pos: FieldPos) -> Option<&T> {
+        if let Some(line) = self.data.get(pos.y as usize) {
+            line.get(pos.x as usize)
+        }
+        else {
+            None
+        }
+    }
 
     /// Set the item at the provided position of the map. Returns the item that
     /// was there before.
@@ -80,19 +87,34 @@ impl<T> Map<T> {
     /// # Panics
     /// If the index is out of bounds. The map will not be resized in this
     /// function.
-    pub fn set(&mut self, _pos: FieldPos, _new: T) -> T { unimplemented!() }
+    pub fn set(&mut self, pos: FieldPos, new: T) -> T {
+        assert!(pos.x < self.width());
+        assert!(pos.y < self.height());
+
+        // Push the new item to the end of the line in question and swap it with the
+        // element at the x position afterwards.
+        self.data[pos.y as usize].push(new);
+        self.data[pos.y as usize].swap_remove(pos.x as usize)
+    }
 
     /// Iterator over all map tiles.
-    pub fn iter(&self) -> Iter2d<T> { unimplemented!() }
+    pub fn iter(&self) -> Iter2d<T> { Iter2d::new(&self.data) }
 
     /// Amount of tiles in the x-direction.
-    pub fn width(&self) -> u8 { unimplemented!() }
+    pub fn width(&self) -> u8 {
+        if self.data.len() == 0 {
+            0
+        }
+        else {
+            self.data[0].len() as u8
+        }
+    }
 
     /// Amount of tiles in the y-direction.
-    pub fn height(&self) -> u8 { unimplemented!() }
+    pub fn height(&self) -> u8 { self.data.len() as u8 }
 
     /// Amount of tiles in the x and y-direction.
-    pub fn size(&self) -> Vec2<u8> { unimplemented!() }
+    pub fn size(&self) -> Vec2<u8> { Vec2::from_values(self.width(), self.height()) }
 }
 
 impl<T> From<Vec<Vec<T>>> for Map<T> {
@@ -132,6 +154,27 @@ impl MapExt for Full {
             false
         }
     }
+
+    fn limit_rect(&self) -> Rect<u8> {
+        let mut min_pos = FieldPos::new();
+        let mut max_pos = FieldPos::new();
+
+        self.iter().for_each(|(pos, e)| {
+            if let Some(_) = e {
+                min_pos.x = min_pos.x.min(pos.x);
+                min_pos.y = min_pos.y.min(pos.y);
+                max_pos.x = max_pos.x.max(pos.x);
+                max_pos.y = max_pos.y.max(pos.y);
+            }
+        });
+
+        Rect::from_slice([
+            min_pos.x,
+            min_pos.y,
+            max_pos.x - min_pos.x,
+            max_pos.y - min_pos.y
+        ])
+    }
 }
 
 impl MapExt for BlackWhite {
@@ -142,6 +185,27 @@ impl MapExt for BlackWhite {
         else {
             false
         }
+    }
+
+    fn limit_rect(&self) -> Rect<u8> {
+        let mut min_pos = FieldPos::new();
+        let mut max_pos = FieldPos::new();
+
+        self.iter().for_each(|(pos, &e)| {
+            if e {
+                min_pos.x = min_pos.x.min(pos.x);
+                min_pos.y = min_pos.y.min(pos.y);
+                max_pos.x = max_pos.x.max(pos.x);
+                max_pos.y = max_pos.y.max(pos.y);
+            }
+        });
+
+        Rect::from_slice([
+            min_pos.x,
+            min_pos.y,
+            max_pos.x - min_pos.x,
+            max_pos.y - min_pos.y
+        ])
     }
 }
 

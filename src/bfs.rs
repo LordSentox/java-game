@@ -144,10 +144,13 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::math::Rect;
     use std::ops::Deref;
 
     impl MapExt for Map<Option<u32>> {
         fn is_standable(&self, pos: FieldPos) -> bool { self.get(pos).unwrap().is_some() }
+
+        fn limit_rect(&self) -> Rect<u8> { Rect::from_slice([0, 0, self.width(), self.height()]) }
     }
 
     #[test]
