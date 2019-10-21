@@ -1,7 +1,7 @@
 //! Traits that describe the actions an Adventurer can take that may be unique
 //! to them.
 
-use crate::map::Full as FullMap;
+use crate::map::{Full as FullMap, MapExt};
 use crate::math::Vec2;
 use crate::positionable::Positionable;
 

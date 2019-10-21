@@ -1,13 +1,13 @@
 //! Implementation of a special Breadth First Search algorithm specialised on
 //! the applications in the forbidden island.
 
-use crate::flat_2dvec;
-use crate::map::{BlackWhite as BlackWhiteMap, FieldPos};
-use crate::math::{Rect, Vec2};
+use crate::map::{BlackWhite as BlackWhiteMap, FieldPos, Map, MapExt};
+use crate::math::Vec2;
 
 #[derive(Debug)]
 pub enum Error {
-    UnavailableStartingPosition
+    UnavailableStartingPosition,
+    StartingPosOutOfBounds
 }
 
 /// Find the positions that can be reached with a normal move set from the
@@ -24,21 +24,7 @@ pub enum Error {
 pub fn reachable_positions(
     data: &BlackWhiteMap,
     start_pos: Option<FieldPos>
-) -> Result<Vec<Vec<bool>>, Error> {
-    let start_pos = match start_pos {
-        Some(start_pos) => Some(Vec2::from_values(
-            start_pos.x as usize,
-            start_pos.y as usize
-        )),
-        None => None
-    };
-    let limits = Some(Rect::from_slice([
-        data.limit_rect().x as usize,
-        data.limit_rect().y as usize,
-        data.limit_rect().w as usize,
-        data.limit_rect().h as usize
-    ]));
-
+) -> Result<Map<bool>, Error> {
     // Mark the island tiles (`true`) which have been reached with a Some. Every
     // reached tile marked in such a way will then produce a `true` in the
     // output, all others `false`.
@@ -46,9 +32,8 @@ pub fn reachable_positions(
         data,
         start_pos,
         (),
-        limits,
-        |_, (_, tile)| {
-            if let Some(true) = tile {
+        |_, (_, &tile)| {
+            if tile {
                 Some(())
             }
             else {
@@ -67,28 +52,26 @@ pub fn reachable_positions(
 /// # Arguments
 ///
 /// * `data` - The data to analyse
-/// * `limits` - The Rectangle that must not be left while performing the
-///   breadth first search
 /// * `start_pos` - The position from which to start bfs, or `None` for any
-///   non-`None` start point
+///   starting position that is standable
 /// * `start_marker` - The marker that should be placed at the starting pos of
 ///   bfs
 /// * `marker` - Function that marks all positions which have been reached based
 ///   on the tile it has been reached from
 /// * `output` - Function to convert the markers to the expected output
-pub fn bfs<D, O, M, F, G>(
-    data: &Vec<Vec<Option<D>>>,
-    start_pos: Option<Vec2<usize>>,
+pub fn bfs<T, O, M, F, G>(
+    data: &Map<T>,
+    start_pos: Option<FieldPos>,
     start_marker: M,
-    limits: Option<Rect<usize>>,
     marker: F,
     output: G
-) -> Result<Vec<Vec<O>>, Error>
+) -> Result<Map<O>, Error>
 where
+    Map<T>: MapExt,
     O: Clone,
     M: Clone + PartialEq,
-    F: Fn((Vec2<usize>, &Option<M>), (Vec2<usize>, &Option<D>)) -> Option<M>,
-    G: Fn(Vec2<usize>, &Option<M>) -> O
+    F: Fn((FieldPos, &Option<M>), (FieldPos, &T)) -> Option<M>,
+    G: Fn(FieldPos, &Option<M>) -> O
 {
     // Set the starting position or find a possible starting position
     let start_pos = match start_pos {
@@ -96,22 +79,20 @@ where
         None => {
             // Find a non-None item in the 2d-vector. This must exist, otherwise it is an
             // error.
-            match flat_2dvec::flatten(data)
-                .into_iter()
-                .find(|(_, e)| e.is_some())
-            {
-                Some((pos, _)) => pos,
+            match data.iter().find(|(pos, _)| data.is_standable(*pos)) {
+                Some((pos, _)) => Vec2::from_values(pos.x as u8, pos.y as u8),
                 None => return Err(Error::UnavailableStartingPosition)
             }
         }
     };
 
     // Create the marking working Vector and mark the starting position
-    let mut marked: Vec<Vec<Option<M>>> = Vec::with_capacity(data.len());
-    for line in data {
-        marked.push(vec![None; line.len()]);
+    let mut marked: Map<Option<M>> = Map::new(data.size(), None);
+
+    if !data.limit_rect().contains(start_pos) {
+        return Err(Error::StartingPosOutOfBounds);
     }
-    marked[start_pos.y][start_pos.x] = Some(start_marker);
+    marked.set(start_pos, Some(start_marker));
 
     // Mark all places reachable from the starting position with the marking
     // function.
@@ -120,27 +101,19 @@ where
 
         // Go through the map and mark all positions that result from the marking of the
         // last iteration.
-        for y in 0..marked.len() {
-            for x in 0..marked[y].len() {
+        for y in 0..data.height() {
+            for x in 0..data.width() {
                 let pos = Vec2::from_values(x, y);
                 // Look in the four primary directions
-                for nb in pos.neighbours(limits) {
-                    let target_point_data = {
-                        if let Some(line) = data.get(nb.y) {
-                            if let Some(e) = line.get(nb.x) {
-                                e
-                            }
-                            else {
-                                break;
-                            }
-                        }
-                        else {
-                            break;
-                        }
+                for nb in pos.neighbours(None) {
+                    let target_point_data = match data.get(nb) {
+                        Some(e) => e,
+                        None => break
                     };
-                    let to_assign = marker((pos, &marked[y][x]), (nb, target_point_data));
-                    if to_assign != marked[nb.y][nb.x] {
-                        marked[nb.y][nb.x] = to_assign;
+                    let to_assign =
+                        marker((pos, &marked.get(pos).unwrap()), (nb, target_point_data));
+                    if &to_assign != marked.get(nb).unwrap() {
+                        marked.set(nb, to_assign);
                         something_changed = true;
                     }
                 }
@@ -155,35 +128,41 @@ where
     }
 
     // Convert the markers into the requested output format.
-    let mut out_map = Vec::with_capacity(marked.len());
-    for (y, marked_line) in marked.iter().enumerate() {
-        let mut out_line = Vec::with_capacity(marked_line.len());
-        for (x, e) in marked_line.iter().enumerate() {
-            out_line.push(output(Vec2::from_values(x, y), e));
+    let mut out_map = Vec::with_capacity(data.height() as usize);
+    for y in 0..data.height() {
+        let mut out_line = Vec::with_capacity(data.width() as usize);
+        for x in 0..data.width() {
+            let pos = Vec2::from_values(x, y);
+            out_line.push(output(pos, marked.get(pos).unwrap()));
         }
         out_map.push(out_line);
     }
 
-    Ok(out_map)
+    Ok(out_map.into())
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
+    use std::ops::Deref;
+
+    impl MapExt for Map<Option<u32>> {
+        fn is_standable(&self, pos: FieldPos) -> bool { self.get(pos).unwrap().is_some() }
+    }
 
     #[test]
     fn bfs_cross_no_start_point() {
-        let data = vec![
-            vec![None, None, Some(1)],
+        let data: Map<Option<u32>> = vec![
+            vec![None, None, Some(1), None, None, None],
             vec![None, Some(2), Some(3), Some(4), None, None],
-            vec![None, None, Some(5), None],
-        ];
+            vec![None, None, Some(5), None, None, None],
+        ]
+        .into();
 
         let bfs = bfs(
             &data,
             None,
             true,
-            None,
             |_, (_, tile)| {
                 if let Some(_) = tile {
                     Some(true)
@@ -197,11 +176,11 @@ mod test {
         .unwrap();
 
         let expected = vec![
-            vec![false, false, true],
+            vec![false, false, true, false, false, false],
             vec![false, true, true, true, false, false],
-            vec![false, false, true, false],
+            vec![false, false, true, false, false, false],
         ];
 
-        assert_eq!(expected, bfs);
+        assert_eq!(&expected, bfs.deref());
     }
 }

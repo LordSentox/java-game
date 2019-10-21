@@ -1,29 +1,29 @@
 //! Traits for iterating through a 2D-Vector.
 
-use crate::math::Vec2;
+use crate::map::FieldPos;
 
 pub struct Iter2d<'a, T> {
     internal: &'a Vec<Vec<T>>,
-    pos:      Vec2<usize>
+    pos:      FieldPos
 }
 
 impl<'a, T> Iter2d<'a, T> {
     pub fn new(source: &'a Vec<Vec<T>>) -> Self {
         Self {
             internal: source,
-            pos:      Vec2::new()
+            pos:      FieldPos::new()
         }
     }
 }
 
 impl<'a, T> Iterator for Iter2d<'a, T> {
-    type Item = (Vec2<usize>, &'a T);
+    type Item = (FieldPos, &'a T);
 
     fn next(&mut self) -> Option<Self::Item> {
         // Get the current line the Iterator is on.
-        if let Some(line) = self.internal.get(self.pos.y) {
+        if let Some(line) = self.internal.get(self.pos.y as usize) {
             // Get the current element
-            if let Some(e) = line.get(self.pos.x) {
+            if let Some(e) = line.get(self.pos.x as usize) {
                 // Try to shift the pointer one to the right and return the current element.
                 let old_pos = self.pos;
                 self.pos.x += 1;
