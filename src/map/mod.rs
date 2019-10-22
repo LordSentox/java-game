@@ -4,6 +4,11 @@
 //! standard moveset of up, down, left and right suffices to walk the entire
 //! island by foot.
 
+pub mod island_tile;
+pub use self::island_tile::*;
+
+pub mod generate;
+
 use crate::iter_2d::Iter2d;
 use crate::math::{Rect, Vec2};
 use std::ops::{Deref, DerefMut};
@@ -36,35 +41,6 @@ pub trait MapExt {
     /// provided, which means it returns false in case there is no island
     /// tile or it's gone.
     fn is_standable(&self, _pos: FieldPos) -> bool;
-}
-
-/// The different states an island can be.
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum IslandTileState {
-    /// The island is dry. Players can freely do anything on these tiles.
-    Dry,
-    /// Flooded tiles can be drained. Players can still freely do anything on
-    /// these tiles, however they should be careful since they will be
-    /// [Gone](IslandTileState::Gone) the next time their flood card is
-    /// drawn.
-    Flooded,
-    /// The tile is gone. The diver can still swim through it, but other than
-    /// that it's unusable.
-    Gone
-}
-
-/// Represents one of 24 island map tiles.
-#[derive(Clone, Debug, PartialEq)]
-pub struct IslandTile {
-    state: IslandTileState
-}
-
-impl IslandTile {
-    pub fn new() -> Self {
-        Self {
-            state: IslandTileState::Dry
-        }
-    }
 }
 
 impl<T> Map<T> {
@@ -218,10 +194,4 @@ impl MapExt for BlackWhite {
             max_pos.y - min_pos.y
         ])
     }
-}
-
-impl IslandTile {
-    pub fn state(&self) -> IslandTileState { self.state }
-
-    pub fn set_state(&mut self, state: IslandTileState) { self.state = state; }
 }
