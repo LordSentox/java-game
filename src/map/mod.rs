@@ -4,31 +4,24 @@
 //! standard moveset of up, down, left and right suffices to walk the entire
 //! island by foot.
 
-pub mod island_tile;
-pub use self::island_tile::*;
+pub mod black_white;
+pub use self::black_white::*;
+
+pub mod full;
+pub use self::full::*;
 
 pub mod generate;
+
+pub mod island_tile;
+pub use self::island_tile::*;
 
 use crate::iter_2d::Iter2d;
 use crate::math::{Rect, Vec2};
 use std::ops::{Deref, DerefMut};
 
-/// Mapse, that can be played on contain 24 unique island tiles.
-pub type Full = Map<Option<IslandTile>>;
-
-/// The black and white map is the raw map data that just saves, where island
-/// tiles should be placed (true) and where the sea is (false). They are
-/// usually used to generate maps randomly.
-pub type BlackWhite = Map<bool>;
-
 /// Alias for the position type an item must hold in order to be placeable on a
 /// map.
 pub type FieldPos = Vec2<u8>;
-
-#[derive(Clone, Debug)]
-pub struct Map<T> {
-    data: Vec<Vec<T>>
-}
 
 pub trait MapExt {
     /// Get the [Rect](Rect<u8>) this map is bounded by, meaning that beyond it,
@@ -41,6 +34,11 @@ pub trait MapExt {
     /// provided, which means it returns false in case there is no island
     /// tile or it's gone.
     fn is_standable(&self, _pos: FieldPos) -> bool;
+}
+
+#[derive(Clone, Debug)]
+pub struct Map<T> {
+    data: Vec<Vec<T>>
 }
 
 impl<T> Map<T> {
@@ -127,71 +125,4 @@ impl<T> Deref for Map<T> {
 }
 impl<T> DerefMut for Map<T> {
     fn deref_mut(&mut self) -> &mut Self::Target { &mut self.data }
-}
-
-impl MapExt for Full {
-    fn is_standable(&self, pos: FieldPos) -> bool {
-        if let Some(Some(tile)) = self.get(pos) {
-            tile.state() != IslandTileState::Gone
-        }
-        else {
-            false
-        }
-    }
-
-    fn limit_rect(&self) -> Rect<u8> {
-        // Find the minimum rectangular hull around the island tiles and return it.
-        let mut min_pos = FieldPos::new();
-        let mut max_pos = FieldPos::new();
-
-        self.iter().for_each(|(pos, e)| {
-            if let Some(_) = e {
-                min_pos.x = min_pos.x.min(pos.x);
-                min_pos.y = min_pos.y.min(pos.y);
-                max_pos.x = max_pos.x.max(pos.x);
-                max_pos.y = max_pos.y.max(pos.y);
-            }
-        });
-
-        Rect::from_slice([
-            min_pos.x,
-            min_pos.y,
-            max_pos.x - min_pos.x,
-            max_pos.y - min_pos.y
-        ])
-    }
-}
-
-impl MapExt for BlackWhite {
-    fn is_standable(&self, pos: FieldPos) -> bool {
-        if let Some(tile) = self.get(pos) {
-            *tile
-        }
-        else {
-            false
-        }
-    }
-
-    fn limit_rect(&self) -> Rect<u8> {
-        // Find the minimum rectangular hull around all true tiles (island tiles) and
-        // return it.
-        let mut min_pos = FieldPos::new();
-        let mut max_pos = FieldPos::new();
-
-        self.iter().for_each(|(pos, &e)| {
-            if e {
-                min_pos.x = min_pos.x.min(pos.x);
-                min_pos.y = min_pos.y.min(pos.y);
-                max_pos.x = max_pos.x.max(pos.x);
-                max_pos.y = max_pos.y.max(pos.y);
-            }
-        });
-
-        Rect::from_slice([
-            min_pos.x,
-            min_pos.y,
-            max_pos.x - min_pos.x,
-            max_pos.y - min_pos.y
-        ])
-    }
 }
