@@ -16,7 +16,6 @@ pub mod card_stack;
 pub mod character;
 pub mod difficulty;
 pub mod direction;
-pub mod flat_2dvec;
 pub mod iter_2d;
 pub mod map;
 pub mod math;
