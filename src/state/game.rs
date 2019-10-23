@@ -1,8 +1,26 @@
-use amethyst::prelude::*;
+use amethyst::{core::Transform, prelude::*, renderer::Camera};
+
+pub const GAME_WIDTH: f32 = 1920.;
+pub const GAME_HEIGHT: f32 = 1080.;
 
 /// The state the game is in while a game is being played
 pub struct Game;
 
 impl SimpleState for Game {
-    fn on_start(&mut self, _data: StateData<'_, GameData<'_, '_>>) {}
+    fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
+        let world = data.world;
+
+        init_camera(world);
+    }
+}
+
+fn init_camera(world: &mut World) {
+    let mut transform = Transform::default();
+    transform.set_translation_xyz(GAME_WIDTH * 0.5, GAME_HEIGHT * 0.5, 1.0);
+
+    world
+        .create_entity()
+        .with(Camera::standard_2d(GAME_WIDTH, GAME_HEIGHT))
+        .with(transform)
+        .build();
 }
