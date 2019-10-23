@@ -1,3 +1,5 @@
+use amethyst::ecs::{Component, DenseVecStorage};
+
 /// The different states an island can be.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum IslandTileState {
@@ -14,7 +16,7 @@ pub enum IslandTileState {
 }
 
 /// Represents one of 24 island map tiles.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Component, Debug, PartialEq)]
 pub struct IslandTile {
     state: IslandTileState
 }
