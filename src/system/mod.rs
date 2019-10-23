@@ -1,3 +1,6 @@
+pub mod character_transform_update;
+pub use character_transform_update::*;
+
 pub mod collect_artefact;
 pub use self::collect_artefact::*;
 
@@ -15,9 +18,6 @@ pub use self::move_normal::*;
 
 pub mod move_special;
 pub use self::move_special::*;
-
-pub mod player_transform_update;
-pub use player_transform_update::*;
 
 pub mod rescue;
 pub use self::rescue::*;
