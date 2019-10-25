@@ -1,0 +1,156 @@
+// TODO: Make this a grid, instead of a spritesheet once you figure out, how
+// those work.
+(
+	texture_width: 2400,
+	texture_height: 1600,
+	sprites: [
+		// First row
+		(
+			x: 0,
+			y: 0,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 400,
+			y: 0,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 800,
+			y: 0,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 1200,
+			y: 0,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 1600,
+			y: 0,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 2000,
+			y: 0,
+			width: 400,
+			height: 400
+		),
+		// Second row
+		(
+			x: 0,
+			y: 400,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 400,
+			y: 400,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 800,
+			y: 400,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 1200,
+			y: 400,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 1600,
+			y: 400,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 2000,
+			y: 400,
+			width: 400,
+			height: 400
+		),
+		// Third row
+		(
+			x: 0,
+			y: 800,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 400,
+			y: 800,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 800,
+			y: 800,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 1200,
+			y: 800,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 1600,
+			y: 800,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 2000,
+			y: 800,
+			width: 400,
+			height: 400
+		),
+		// Fourth row
+		(
+			x: 0,
+			y: 1200,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 400,
+			y: 1200,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 800,
+			y: 1200,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 1200,
+			y: 1200,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 1600,
+			y: 1200,
+			width: 400,
+			height: 400
+		),
+		(
+			x: 2000,
+			y: 1200,
+			width: 400,
+			height: 400
+		),
+	]
+)
