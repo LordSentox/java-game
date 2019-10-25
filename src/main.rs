@@ -11,6 +11,7 @@ extern crate java_game_derive;
 
 pub mod action_state;
 pub mod adventurer;
+pub mod asset;
 pub mod bfs;
 pub mod card_stack;
 pub mod character;
