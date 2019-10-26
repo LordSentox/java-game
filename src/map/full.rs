@@ -1,4 +1,5 @@
 //! Mapse, that can be played on contain 24 unique island tiles.
+
 use super::{FieldPos, IslandTile, IslandTileState, Map, MapExt};
 use crate::math::Rect;
 
