@@ -1,9 +1,22 @@
 //! Mapse, that can be played on contain 24 unique island tiles.
 
 use super::{FieldPos, IslandTile, IslandTileState, Map, MapExt};
-use crate::math::Rect;
+use crate::asset;
+use crate::math::{Rect, Vec2};
+use amethyst::{
+    core::Transform,
+    ecs::{Component, DenseVecStorage, Entity, World, WorldExt},
+    prelude::*,
+    renderer::SpriteRender
+};
 
 pub type Full = Map<Option<IslandTile>>;
+
+pub const TILE_WIDTH: f32 = 400.;
+pub const TILE_HEIGHT: f32 = 400.;
+
+#[derive(Component)]
+pub struct FieldPosComp(FieldPos);
 
 impl MapExt for Full {
     fn is_standable(&self, pos: FieldPos) -> bool {
@@ -35,5 +48,44 @@ impl MapExt for Full {
             max_pos.x - min_pos.x,
             max_pos.y - min_pos.y
         ])
+    }
+}
+
+impl Full {
+    pub fn into_rendered(self, pos: Vec2<f32>, world: &mut World) -> Entity {
+        let sprites_dry = asset::load_sprite_sheet("tiles_dry.png", "tiles_sheet.ron", world);
+        //let _sprites_flooded =
+        //    asset::load_sprite_sheet("tiles_flooded.png", "tiles_sheet.ron", world);
+
+        let mut sprite = 0;
+        for y in 0..self.width() {
+            for x in 0..self.height() {
+                let mut transform = Transform::default();
+                transform.set_translation_xyz(
+                    pos.x + TILE_WIDTH * x as f32,
+                    pos.y + TILE_HEIGHT * y as f32,
+                    0.0
+                );
+
+                let sprite_render = SpriteRender {
+                    sprite_sheet:  sprites_dry.clone(),
+                    sprite_number: sprite % 24
+                };
+
+                world
+                    .create_entity()
+                    .with(sprite_render.clone())
+                    .with(FieldPosComp(FieldPos::from_values(x, y)))
+                    .with(transform)
+                    .build();
+
+                sprite += 1;
+            }
+        }
+
+        let mut transform = Transform::default();
+        transform.set_translation_xyz(pos.x, pos.y, 0.0);
+
+        world.create_entity().with(self).with(transform).build()
     }
 }

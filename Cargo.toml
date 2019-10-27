@@ -12,9 +12,11 @@ amethyst = "0.13.0"
 java-game-derive = { path = "java-game-derive" }
 nalgebra = "0.18.1"
 num = "0.2.0"
+shred = "0.9.3"
 
 [features]
 default = ["vulkan"]
 vulkan = ["amethyst/vulkan"]
 metal = ["amethyst/metal"]
 empty = ["amethyst/empty"]
+nightly = ["shred/nightly"]

@@ -1,5 +1,8 @@
 use amethyst::{core::Transform, prelude::*, renderer::Camera};
 
+use crate::map::{FieldPosComp, Full as MapFull};
+use crate::math::Vec2;
+
 pub const GAME_WIDTH: f32 = 1920.;
 pub const GAME_HEIGHT: f32 = 1080.;
 
@@ -9,6 +12,12 @@ pub struct Game;
 impl SimpleState for Game {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
+
+        world.register::<MapFull>();
+        world.register::<FieldPosComp>();
+
+        let map = MapFull::new(Vec2::from_values(10, 7), None);
+        map.into_rendered(Vec2::from_values(200., 200.), world);
 
         init_camera(world);
     }
