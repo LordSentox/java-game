@@ -60,8 +60,8 @@ impl Full {
         //    asset::load_sprite_sheet("tiles_flooded.png", "tiles_sheet.ron", world);
 
         let mut sprite = 0;
-        for y in 0..self.width() {
-            for x in 0..self.height() {
+        for y in 0..self.height() {
+            for x in 0..self.width() {
                 let mut transform = Transform::default();
                 transform.set_scale(Vector3::new(TILE_SCALE, TILE_SCALE, TILE_SCALE));
                 transform.set_translation_xyz(
