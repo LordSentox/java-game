@@ -17,7 +17,7 @@ impl SimpleState for Game {
         world.register::<FieldPosComp>();
 
         let map = MapFull::new(Vec2::from_values(10, 7), None);
-        map.into_rendered(Vec2::from_values(200., 200.), world);
+        map.into_rendered(Vec2::from_values(64., 64.), world);
 
         init_camera(world);
     }

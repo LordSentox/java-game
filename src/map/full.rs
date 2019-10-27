@@ -9,11 +9,13 @@ use amethyst::{
     prelude::*,
     renderer::SpriteRender
 };
+use nalgebra::Vector3;
 
 pub type Full = Map<Option<IslandTile>>;
 
 pub const TILE_WIDTH: f32 = 400.;
 pub const TILE_HEIGHT: f32 = 400.;
+pub const TILE_SCALE: f32 = 0.32;
 
 #[derive(Component)]
 pub struct FieldPosComp(FieldPos);
@@ -61,9 +63,10 @@ impl Full {
         for y in 0..self.width() {
             for x in 0..self.height() {
                 let mut transform = Transform::default();
+                transform.set_scale(Vector3::new(TILE_SCALE, TILE_SCALE, TILE_SCALE));
                 transform.set_translation_xyz(
-                    pos.x + TILE_WIDTH * x as f32,
-                    pos.y + TILE_HEIGHT * y as f32,
+                    pos.x + TILE_WIDTH * x as f32 * TILE_SCALE,
+                    pos.y + TILE_HEIGHT * y as f32 * TILE_SCALE,
                     0.0
                 );
 
