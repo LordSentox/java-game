@@ -2,11 +2,13 @@
 //! drawing phase. The beginning water level is the primary tool of setting the
 //! difficulty of the game.
 
+use amethyst::ecs::{Entity, World};
 use std::ops::{Add, AddAssign};
 use std::u8;
 
 use crate::action_state::ActionState;
 use crate::difficulty::Difficulty;
+use crate::math::Vec2;
 
 /// The water level above which (inclusive) the game is lost.
 pub const LOOSING_WATER_LEVEL: u8 = 9;
@@ -61,6 +63,8 @@ impl WaterLevel {
     /// lost because of it, false otherwise. Note that this does not exclude
     /// the possibility of the game being lost because of other means.
     pub fn game_lost(&self) -> bool { self.level >= LOOSING_WATER_LEVEL }
+
+    pub fn into_entity(self, _pos: Vec2<f32>, _world: &mut World) -> Entity { unimplemented!() }
 }
 
 /// Create a new WaterLevel which is incremented by the given amount. Can be

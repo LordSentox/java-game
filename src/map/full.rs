@@ -54,10 +54,8 @@ impl MapExt for Full {
 }
 
 impl Full {
-    pub fn into_rendered(self, pos: Vec2<f32>, world: &mut World) -> Entity {
-        let sprites_dry = asset::load_sprite_sheet("tiles_dry.png", "tiles_sheet.ron", world);
-        //let _sprites_flooded =
-        //    asset::load_sprite_sheet("tiles_flooded.png", "tiles_sheet.ron", world);
+    pub fn into_entity(self, pos: Vec2<f32>, world: &mut World) -> Entity {
+        let sprites = asset::load_sprite_sheet("tiles.png", "tiles_sheet.ron", world);
 
         let mut sprite = 0;
         for y in 0..self.height() {
@@ -71,7 +69,7 @@ impl Full {
                 );
 
                 let sprite_render = SpriteRender {
-                    sprite_sheet:  sprites_dry.clone(),
+                    sprite_sheet:  sprites.clone(),
                     sprite_number: sprite % 24
                 };
 
