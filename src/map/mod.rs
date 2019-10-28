@@ -21,6 +21,10 @@ use crate::iter_2d::Iter2d;
 use crate::math::{Rect, Vec2};
 use std::ops::{Deref, DerefMut};
 
+/// The number of tiles that are in a single map when it is valid. In later
+/// versions, this could vary.
+pub const TILE_AMOUNT: u8 = 24;
+
 /// Alias for the position type an item must hold in order to be placeable on a
 /// map.
 pub type FieldPos = Vec2<u8>;

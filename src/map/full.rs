@@ -1,6 +1,6 @@
 //! Mapse, that can be played on contain 24 unique island tiles.
 
-use super::{FieldPos, IslandTile, IslandTileState, Map, MapExt};
+use super::{FieldPos, IslandTile, IslandTileState, Map, MapExt, TILE_AMOUNT};
 use crate::asset;
 use crate::math::{Rect, Vec2};
 use amethyst::{
@@ -70,7 +70,7 @@ impl Full {
 
                 let sprite_render = SpriteRender {
                     sprite_sheet:  sprites.clone(),
-                    sprite_number: sprite % 24
+                    sprite_number: sprite % TILE_AMOUNT as usize
                 };
 
                 world
