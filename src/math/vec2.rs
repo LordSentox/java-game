@@ -89,6 +89,45 @@ impl<T: Scalar> Vec2<T> {
         retain_inside_limits(neighbours, limits)
     }
 
+    pub fn diagonal_neighbours(&self, limits: Option<Rect<T>>) -> Vec<Self>
+    where
+        T: Integer + CheckedAdd + CheckedSub + Identity<Additive> + Identity<Multiplicative>
+    {
+        let mut diagonal_neighbours = Vec::with_capacity(4);
+
+        // Up+Right
+        if let (Some(x), Some(y)) = (
+            self.x.checked_add(&nalgebra::one()),
+            self.y.checked_sub(&nalgebra::one())
+        ) {
+            diagonal_neighbours.push(Vec2::from_values(x, y));
+        }
+        // Up+Left
+        if let (Some(x), Some(y)) = (
+            self.x.checked_sub(&nalgebra::one()),
+            self.y.checked_sub(&nalgebra::one())
+        ) {
+            diagonal_neighbours.push(Vec2::from_values(x, y));
+        }
+        // Down+Left
+        if let (Some(x), Some(y)) = (
+            self.x.checked_sub(&nalgebra::one()),
+            self.y.checked_add(&nalgebra::one())
+        ) {
+            diagonal_neighbours.push(Vec2::from_values(x, y));
+        }
+        // Down+Right
+        if let (Some(x), Some(y)) = (
+            self.x.checked_add(&nalgebra::one()),
+            self.y.checked_add(&nalgebra::one())
+        ) {
+            diagonal_neighbours.push(Vec2::from_values(x, y));
+        }
+
+        diagonal_neighbours = retain_inside_limits(diagonal_neighbours, limits);
+        diagonal_neighbours
+    }
+
     pub fn surrounding(&self, limits: Option<Rect<T>>) -> Vec<Self>
     where
         T: Integer + CheckedAdd + CheckedSub + Identity<Additive> + Identity<Multiplicative>
@@ -96,37 +135,8 @@ impl<T: Scalar> Vec2<T> {
         // TODO: Make this nicer, more succinct
         let mut surrounding = Vec::with_capacity(8);
 
-        // Up+Right
-        if let (Some(x), Some(y)) = (
-            self.x.checked_add(&nalgebra::one()),
-            self.y.checked_sub(&nalgebra::one())
-        ) {
-            surrounding.push(Vec2::from_values(x, y));
-        }
-        // Up+Left
-        if let (Some(x), Some(y)) = (
-            self.x.checked_sub(&nalgebra::one()),
-            self.y.checked_sub(&nalgebra::one())
-        ) {
-            surrounding.push(Vec2::from_values(x, y));
-        }
-        // Down+Left
-        if let (Some(x), Some(y)) = (
-            self.x.checked_sub(&nalgebra::one()),
-            self.y.checked_add(&nalgebra::one())
-        ) {
-            surrounding.push(Vec2::from_values(x, y));
-        }
-        // Down+Right
-        if let (Some(x), Some(y)) = (
-            self.x.checked_add(&nalgebra::one()),
-            self.y.checked_add(&nalgebra::one())
-        ) {
-            surrounding.push(Vec2::from_values(x, y));
-        }
-
-        surrounding = retain_inside_limits(surrounding, limits);
         surrounding.append(&mut self.neighbours(limits));
+        surrounding.append(&mut self.diagonal_neighbours(limits));
 
         surrounding
     }

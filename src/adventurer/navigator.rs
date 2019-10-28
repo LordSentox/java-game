@@ -12,7 +12,8 @@ use crate::positionable::Positionable;
 
 #[derive(Positionable)]
 pub struct Navigator {
-    pos: FieldPos
+    pos: FieldPos,
+    extra_push: bool
 }
 
 impl Navigator {
@@ -25,15 +26,23 @@ impl Adventurer for Navigator {
     /// The navigator may move another adventurer when they have an action point
     /// left, or if there has been a push immediately before which already
     /// cost an action point.
-    fn can_move_other(&self, _act_points: u8) -> bool { unimplemented!() }
+    fn can_move_other(&self, act_points: u8) -> bool { act_points != 0 || self.extra_push }
 
     /// When someone is moved, either an action point is spent or there is no
     /// extra move anymore.
-    fn on_move_other(&mut self, _act_points: &mut u8) { unimplemented!() }
+    fn on_move_other(&mut self, act_points: &mut u8) {
+        if self.extra_push {
+            self.extra_push = false;
+        }
+        else {
+            *act_points -= 1;
+            self.extra_push = true;
+        }
+    }
 
     /// If any extra movement of another adventurer was possible, it is reset
     /// when the navigator moves.
-    fn on_move(&mut self) { unimplemented!() }
+    fn on_move(&mut self) { self.extra_push = false; }
 }
 
 impl AdventurerInfo for Navigator {}
