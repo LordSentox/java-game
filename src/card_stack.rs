@@ -10,14 +10,19 @@ impl<T> CardStack<T> {
     /// Create a new card stack with the given draw stack. Does not shuffle the
     /// cards. Must be done manually, so the card stack can be loaded from a
     /// file if needed.
+    ///
+    /// # Param
+    /// `draw_stack` - The initial draw stack. The last card in the vector will
+    /// be the top card
     pub fn new(_draw_stack: Vec<T>) -> Self { unimplemented!() }
 
     /// Get the discard pile, which may be looked into for both flood cards and
     /// treasure cards.
     pub fn discard_stack(&self) -> &Vec<T> { &self.discard_stack }
 
-    /// Draw a card from the draw stack.
-    pub fn draw_card(&mut self) -> T { unimplemented!() }
+    /// Draw a card from the draw stack and return it. Returns `None`, if there
+    /// are no cards on the draw stack left.
+    pub fn draw_card(&mut self) -> Option<T> { unimplemented!() }
 
     /// Discarding a card means to put it on the discard pile. If you want to
     /// throw it away, just drop it or let it go out of scope.
@@ -39,4 +44,39 @@ impl<T> CardStack<T> {
     /// Get the amount of cards left in the draw pile and the discard pile
     /// combined.
     pub fn size(&self) -> usize { self.draw_stack_size() + self.discard_stack_size() }
+}
+
+#[cfg(test)]
+mod test {
+    use super::CardStack;
+
+    #[test]
+    fn new() {
+        // Create a card stack and check, that the draw stack is not shuffled and the
+        // discard-stack is empty
+        let mut stack = CardStack::new((0..20_u8).collect());
+
+        for i in 20..0 {
+            assert_eq!(i, stack.draw_card().unwrap());
+        }
+        assert_eq!(0, stack.discard_stack_size());
+    }
+
+    #[test]
+    fn draw_card() {
+        let mut stack = CardStack::new(vec![1]);
+        assert_eq!(Some(1), stack.draw_card());
+        assert_eq!(None, stack.draw_card());
+    }
+
+    #[test]
+    fn discard_card() {
+        let mut stack = CardStack::new(vec![1, 2]);
+        let card = stack.draw_card().unwrap();
+        stack.discard_card(card);
+        let card = stack.draw_card().unwrap();
+        stack.discard_card(card);
+
+        assert_eq!(&vec![2, 1], stack.discard_stack());
+    }
 }
