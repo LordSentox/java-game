@@ -1,5 +1,7 @@
 //! Data type used to store the treasure cards and the flood cards respectively.
 
+use rand::{seq::SliceRandom, thread_rng};
+
 /// Card Stack to store the draw stack and the discard stack of a card type.
 pub struct CardStack<T> {
     draw_stack:    Vec<T>,
@@ -14,7 +16,13 @@ impl<T> CardStack<T> {
     /// # Param
     /// `draw_stack` - The initial draw stack. The last card in the vector will
     /// be the top card
-    pub fn new(_draw_stack: Vec<T>) -> Self { unimplemented!() }
+    pub fn new(draw_stack: Vec<T>) -> Self {
+        let stack_size = draw_stack.len();
+        Self {
+            draw_stack,
+            discard_stack: Vec::with_capacity(stack_size)
+        }
+    }
 
     /// Get the discard pile, which may be looked into for both flood cards and
     /// treasure cards.
@@ -22,18 +30,21 @@ impl<T> CardStack<T> {
 
     /// Draw a card from the draw stack and return it. Returns `None`, if there
     /// are no cards on the draw stack left.
-    pub fn draw_card(&mut self) -> Option<T> { unimplemented!() }
+    pub fn draw_card(&mut self) -> Option<T> { self.draw_stack.pop() }
 
     /// Discarding a card means to put it on the discard pile. If you want to
     /// throw it away, just drop it or let it go out of scope.
-    pub fn discard_card(&mut self, _card: T) { unimplemented!() }
+    pub fn discard_card(&mut self, card: T) { self.discard_stack.push(card) }
 
     /// Shuffle the draw stack. The discard pile is not touched.
-    pub fn shuffle(&mut self) { unimplemented!() }
+    pub fn shuffle(&mut self) { self.draw_stack.shuffle(&mut thread_rng()); }
 
     /// Shuffle the discard pile and put it on top of the draw stack. The draw
     /// stack does not get shuffled.
-    pub fn shuffle_back(&mut self) { unimplemented!() }
+    pub fn shuffle_back(&mut self) {
+        self.discard_stack.shuffle(&mut thread_rng());
+        self.draw_stack.append(&mut self.discard_stack);
+    }
 
     /// Get the amount of cards that are left on the draw stack.
     pub fn draw_stack_size(&self) -> usize { self.draw_stack.len() }

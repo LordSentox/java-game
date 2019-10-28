@@ -12,6 +12,7 @@ amethyst = "0.13.0"
 java-game-derive = { path = "java-game-derive" }
 nalgebra = "0.18.1"
 num = "0.2.0"
+rand = "0.7.2"
 shred = "0.9.3"
 
 [features]
