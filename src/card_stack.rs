@@ -90,4 +90,28 @@ mod test {
 
         assert_eq!(&vec![2, 1], stack.discard_stack());
     }
+
+    #[test]
+    fn shuffle() {
+        // Shuffle can't be tested well, but it can at least be checked, if the
+        // stack sizes stay the same
+        let mut stack = CardStack::new(vec![0.1, 0.2, 0.3, 0.4, 0.5]);
+        stack.shuffle();
+        assert_eq!(5, stack.draw_stack_size());
+        assert_eq!(0, stack.discard_stack_size());
+    }
+
+    #[test]
+    fn shuffle_back() {
+        // Shuffle can't be tested well, but it can at least be checked, if the
+        // stack sizes stay the same
+        let mut stack = CardStack::new(vec![0.; 30]);
+        for i in 0..100 {
+            stack.discard_card(i as f32 / 100.);
+        }
+
+        stack.shuffle_back();
+        assert_eq!(130, stack.draw_stack_size());
+        assert_eq!(0, stack.discard_stack_size());
+    }
 }
