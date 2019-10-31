@@ -55,6 +55,8 @@ impl MapExt for Full {
 }
 
 impl Full {
+    /// Consume the created map and turn it into an ECS-Entity. This can be
+    /// done, once all the setup parts are finished.
     pub fn into_entity(self, pos: Vec2<f32>, world: &mut World) -> Entity {
         let sprites = asset::load_sprite_sheet("tiles.png", "tiles_sheet.ron", world);
 
@@ -91,6 +93,16 @@ impl Full {
         world.create_entity().with(self).with(transform).build()
     }
 
+    /// Find the spawn point of the given adventurer type
+    ///
+    /// # Parameters
+    /// `adventurer_type` - The type of the adventurer the spawn point is
+    /// required of
+    ///
+    /// # Panics
+    /// If the adventurer does not have a corresponding spawn tile. In a valid
+    /// map, this should never happen, since if all tiles are present, all
+    /// potential adventurers have spawn points.
     pub fn spawn_point(&self, adventurer_type: &AdventurerType) -> FieldPos {
         self.iter()
             .find(|(_pos, tile)| {
