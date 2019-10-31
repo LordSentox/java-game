@@ -24,6 +24,18 @@ pub enum AdventurerType {
 }
 
 impl AdventurerType {
+    /// Create a new adventurer corresponding to this adventurer type
+    pub fn create(&self) -> Box<dyn Adventurer> {
+        match self {
+            Self::Courier => Box::new(Courier::new()),
+            Self::Diver => Box::new(Diver::new()),
+            Self::Engineer => Box::new(Engineer::new()),
+            Self::Explorer => Box::new(Explorer::new()),
+            Self::Navigator => Box::new(Navigator::new()),
+            Self::Pilot => Box::new(Pilot::new())
+        }
+    }
+
     /// Returns true, if the player does not have to do anything to activate the
     /// special ability of the adventurer. This does not mean the
     /// special_moves function should be omitted when querying for all

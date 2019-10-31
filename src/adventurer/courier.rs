@@ -13,6 +13,12 @@ pub struct Courier {
 }
 
 impl Courier {
+    pub fn new() -> Self {
+        Self {
+            pos: FieldPos::new()
+        }
+    }
+
     pub fn implicit_special() -> bool { true }
 
     pub fn can_move_others() -> bool { false }

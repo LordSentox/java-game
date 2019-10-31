@@ -1,7 +1,11 @@
 use amethyst::{core::Transform, prelude::*, renderer::Camera};
 
-use crate::map::{FieldPosComp, Full as MapFull};
+use crate::adventurer::AdventurerType;
+use crate::asset;
+use crate::character::Character;
+use crate::map::{FieldPosComp, Full as MapFull, IslandTile, IslandTileInfo};
 use crate::math::Vec2;
+use std::mem;
 
 pub const GAME_WIDTH: f32 = 1920.;
 pub const GAME_HEIGHT: f32 = 1080.;
@@ -15,10 +19,22 @@ impl SimpleState for Game {
 
         world.register::<MapFull>();
         world.register::<FieldPosComp>();
+        world.register::<Character>();
 
-        let map = MapFull::new(Vec2::from_values(10, 7), None);
+        let character_sprite_sheet =
+            asset::load_sprite_sheet("characters.png", "characters.ron", world);
+
+        let mut map = MapFull::new(Vec2::from_values(6, 4), None);
+        for y in 0..4 {
+            for x in 0..6 {
+                let tile_info: IslandTileInfo = unsafe { mem::transmute(y * 6 + x) };
+                map.set(Vec2::from_values(x, y), Some(IslandTile::new(tile_info)));
+            }
+        }
+        let test_courier = Character::new(AdventurerType::Courier);
+
+        test_courier.spawn_entity(&map, world, character_sprite_sheet);
         map.into_entity(Vec2::from_values(64., 64.), world);
-
         init_camera(world);
     }
 }

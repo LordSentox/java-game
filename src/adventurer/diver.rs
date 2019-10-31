@@ -17,7 +17,11 @@ pub struct Diver {
 }
 
 impl Diver {
-    pub fn new(pos: FieldPos) -> Self { Self { pos } }
+    pub fn new() -> Self {
+        Self {
+            pos: FieldPos::new()
+        }
+    }
 
     pub fn implicit_special() -> bool { true }
 

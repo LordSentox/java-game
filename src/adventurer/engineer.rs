@@ -15,6 +15,13 @@ pub struct Engineer {
 }
 
 impl Engineer {
+    pub fn new() -> Self {
+        Self {
+            pos: FieldPos::new(),
+            extra_drain: false
+        }
+    }
+
     pub fn implicit_special() -> bool { true }
 
     pub fn can_move_others() -> bool { false }

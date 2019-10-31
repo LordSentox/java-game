@@ -7,7 +7,10 @@ use amethyst::{
 
 use crate::adventurer::{Adventurer, AdventurerType};
 use crate::map::Full as MapFull;
+use nalgebra::Vector3;
 use std::ops::{Deref, DerefMut};
+
+pub const SPRITE_SCALE: f32 = 0.32;
 
 /// A character is the playable instance of one player.
 ///
@@ -22,6 +25,13 @@ pub struct Character {
 }
 
 impl Character {
+    pub fn new(adventurer_type: AdventurerType) -> Self {
+        Self {
+            internal_handler: adventurer_type.create(),
+            adventurer_type
+        }
+    }
+
     pub fn spawn_entity(
         mut self,
         map: &MapFull,
@@ -37,9 +47,14 @@ impl Character {
             sprite_number: self.adventurer_type as usize
         };
 
+        // Create the transform only with scale. The positioning will be taken care of
+        // by the character transform update system.
+        let mut transform = Transform::default();
+        transform.set_scale(Vector3::new(SPRITE_SCALE, SPRITE_SCALE, SPRITE_SCALE));
+
         world
             .create_entity()
-            .with(Transform::default())
+            .with(transform)
             .with(self)
             .with(renderer)
             .with(Transparent)

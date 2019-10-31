@@ -15,6 +15,12 @@ pub struct Pilot {
 }
 
 impl Pilot {
+    pub fn new() -> Self {
+        Self {
+            pos: FieldPos::new()
+        }
+    }
+
     pub fn implicit_special() -> bool { false }
 
     pub fn can_move_others() -> bool { false }

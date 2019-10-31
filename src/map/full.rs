@@ -68,7 +68,7 @@ impl Full {
                 transform.set_translation_xyz(
                     pos.x + TILE_WIDTH * x as f32 * TILE_SCALE,
                     pos.y + TILE_HEIGHT * y as f32 * TILE_SCALE,
-                    0.0
+                    -1.0
                 );
 
                 let sprite_render = SpriteRender {
