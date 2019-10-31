@@ -1,6 +1,7 @@
 //! Mapse, that can be played on contain 24 unique island tiles.
 
 use super::{FieldPos, IslandTile, IslandTileState, Map, MapExt, TILE_AMOUNT};
+use crate::adventurer::AdventurerType;
 use crate::asset;
 use crate::math::{Rect, Vec2};
 use amethyst::{
@@ -88,6 +89,23 @@ impl Full {
         transform.set_translation_xyz(pos.x, pos.y, 0.0);
 
         world.create_entity().with(self).with(transform).build()
+    }
+
+    pub fn spawn_point(&self, adventurer_type: &AdventurerType) -> FieldPos {
+        self.iter()
+            .find(|(_pos, tile)| {
+                if let Some(tile) = tile {
+                    match tile.info().player_spawn() {
+                        Some(adventurer_spawn) => adventurer_type == &adventurer_spawn,
+                        _ => false
+                    }
+                }
+                else {
+                    false
+                }
+            })
+            .expect("No Spawnpoint registered for the adventurer type")
+            .0 // Return only the position, not the type
     }
 }
 

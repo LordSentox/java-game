@@ -13,8 +13,9 @@ macro_rules! call_func {
     };
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum AdventurerType {
-    Courier,
+    Courier = 0,
     Diver,
     Engineer,
     Explorer,

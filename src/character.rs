@@ -1,6 +1,12 @@
-use amethyst::ecs::{Component, DenseVecStorage};
+use amethyst::{
+    assets::Handle,
+    core::Transform,
+    ecs::{Builder, Component, DenseVecStorage, Entity, World, WorldExt},
+    renderer::{SpriteRender, SpriteSheet, Transparent}
+};
 
-use crate::adventurer::Adventurer;
+use crate::adventurer::{Adventurer, AdventurerType};
+use crate::map::Full as MapFull;
 use std::ops::{Deref, DerefMut};
 
 /// A character is the playable instance of one player.
@@ -11,7 +17,34 @@ use std::ops::{Deref, DerefMut};
 /// [CharacterTransformUpdate](crate::system::CharacterTransformUpdate) system.
 #[derive(Component)]
 pub struct Character {
-    internal_handler: Box<dyn Adventurer>
+    internal_handler: Box<dyn Adventurer>,
+    adventurer_type:  AdventurerType
+}
+
+impl Character {
+    pub fn spawn_entity(
+        mut self,
+        map: &MapFull,
+        world: &mut World,
+        sprite_sheet: Handle<SpriteSheet>
+    ) -> Entity {
+        // Position the character onto the map correctly it the adventurers spawn point
+        let pos = map.spawn_point(&self.adventurer_type);
+        self.set_pos(pos);
+
+        let renderer = SpriteRender {
+            sprite_sheet,
+            sprite_number: self.adventurer_type as usize
+        };
+
+        world
+            .create_entity()
+            .with(Transform::default())
+            .with(self)
+            .with(renderer)
+            .with(Transparent)
+            .build()
+    }
 }
 
 impl Deref for Character {
