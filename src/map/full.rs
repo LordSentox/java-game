@@ -90,3 +90,20 @@ impl Full {
         world.create_entity().with(self).with(transform).build()
     }
 }
+
+/// Graphics helper function to convert the field position in a map to the
+/// actual screen position to the tile.
+///
+/// # Parameters
+/// `map_transform` - The base transform of the map, i.e. where the map is on
+/// the screen `field_pos` - The tile position on the map
+///
+/// # Returns
+/// Transform that should be used for the thing on the map
+pub fn calculate_field_translation(map_transform: &Transform, field_pos: FieldPos) -> Transform {
+    let mut transform = map_transform.clone();
+    transform.prepend_translation_x(TILE_WIDTH * field_pos.x as f32 * TILE_SCALE);
+    transform.prepend_translation_y(TILE_HEIGHT * field_pos.y as f32 * TILE_SCALE);
+
+    transform
+}
