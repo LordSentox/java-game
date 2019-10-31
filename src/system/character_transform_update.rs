@@ -5,7 +5,6 @@ use amethyst::{
 
 use crate::character::Character;
 use crate::map::full::calculate_field_translation;
-use crate::map::Full as MapFull;
 
 /// Responsible for updating the transformations of the player characters based
 /// on the current position of them and the information available of the map
