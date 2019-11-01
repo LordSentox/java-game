@@ -15,8 +15,6 @@ pub mod generate;
 pub mod island_tile;
 pub use self::island_tile::*;
 
-use amethyst::ecs::{Component, DenseVecStorage};
-
 use crate::iter_2d::Iter2d;
 use crate::math::{Rect, Vec2};
 use std::ops::{Deref, DerefMut};
@@ -42,12 +40,12 @@ pub trait MapExt {
     fn is_standable(&self, _pos: FieldPos) -> bool;
 }
 
-#[derive(Clone, Component, Debug)]
-pub struct Map<T: 'static + Send + Sync> {
+#[derive(Clone, Debug)]
+pub struct Map<T> {
     data: Vec<Vec<T>>
 }
 
-impl<T: 'static + Send + Sync> Map<T> {
+impl<T> Map<T> {
     /// Create a new Map and fill its contents with the fill_value.
     pub fn new(size: Vec2<u8>, fill_value: T) -> Self
     where
@@ -105,7 +103,7 @@ impl<T: 'static + Send + Sync> Map<T> {
     pub fn size(&self) -> Vec2<u8> { Vec2::from_values(self.width(), self.height()) }
 }
 
-impl<T: 'static + Send + Sync> From<Vec<Vec<T>>> for Map<T> {
+impl<T> From<Vec<Vec<T>>> for Map<T> {
     fn from(from: Vec<Vec<T>>) -> Self {
         #[cfg(Debug)]
         {
@@ -124,11 +122,11 @@ impl<T: 'static + Send + Sync> From<Vec<Vec<T>>> for Map<T> {
     }
 }
 
-impl<T: 'static + Send + Sync> Deref for Map<T> {
+impl<T> Deref for Map<T> {
     type Target = Vec<Vec<T>>;
 
     fn deref(&self) -> &Self::Target { &self.data }
 }
-impl<T: 'static + Send + Sync> DerefMut for Map<T> {
+impl<T> DerefMut for Map<T> {
     fn deref_mut(&mut self) -> &mut Self::Target { &mut self.data }
 }

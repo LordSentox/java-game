@@ -54,7 +54,12 @@ fn main() -> amethyst::Result<()> {
                         .with_clear([0.34, 0.36, 0.52, 1.0])
                 )
                 .with_plugin(RenderFlat2D::default())
-        )?;
+        )?
+        .with(
+            system::CharacterTransformUpdate,
+            "character_transform_update_system",
+            &[]
+        );
 
     let mut game = Application::build(assets_dir, state::Game)?
         .with_frame_limit(

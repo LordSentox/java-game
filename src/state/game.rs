@@ -17,7 +17,6 @@ impl SimpleState for Game {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
 
-        world.register::<MapFull>();
         world.register::<FieldPosComp>();
         world.register::<Character>();
 
@@ -25,16 +24,17 @@ impl SimpleState for Game {
             asset::load_sprite_sheet("characters.png", "characters.ron", world);
 
         let mut map = MapFull::new(Vec2::from_values(6, 4), None);
+        map.transform_mut().set_translation_xyz(64., 64., -1.);
         for y in 0..4 {
             for x in 0..6 {
                 let tile_info: IslandTileInfo = unsafe { mem::transmute(y * 6 + x) };
                 map.set(Vec2::from_values(x, y), Some(IslandTile::new(tile_info)));
             }
         }
-        let test_courier = Character::new(AdventurerType::Courier);
+        map.create_tile_entities(world);
 
+        let test_courier = Character::new(AdventurerType::Courier);
         test_courier.spawn_entity(&map, world, character_sprite_sheet);
-        map.into_entity(Vec2::from_values(64., 64.), world);
         init_camera(world);
     }
 }

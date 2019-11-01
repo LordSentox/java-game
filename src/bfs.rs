@@ -59,7 +59,7 @@ pub fn reachable_positions(
 /// * `marker` - Function that marks all positions which have been reached based
 ///   on the tile it has been reached from
 /// * `output` - Function to convert the markers to the expected output
-pub fn bfs<T: Send + Sync, O, M, F, G>(
+pub fn bfs<T, O, M, F, G>(
     data: &Map<T>,
     start_pos: Option<FieldPos>,
     start_marker: M,
@@ -68,8 +68,8 @@ pub fn bfs<T: Send + Sync, O, M, F, G>(
 ) -> Result<Map<O>, Error>
 where
     Map<T>: MapExt,
-    O: Clone + Send + Sync,
-    M: Clone + PartialEq + Send + Sync + 'static,
+    O: Clone,
+    M: Clone + PartialEq,
     F: Fn((FieldPos, &Option<M>), (FieldPos, &T)) -> Option<M>,
     G: Fn(FieldPos, &Option<M>) -> O
 {
