@@ -126,6 +126,15 @@ impl Full {
     }
 }
 
+impl From<Vec<Vec<Option<IslandTile>>>> for Full {
+    fn from(from: Vec<Vec<Option<IslandTile>>>) -> Self {
+        Self {
+            map: from.into(),
+            transform: Transform::default()
+        }
+    }
+}
+
 impl Default for Full {
     fn default() -> Self { Self::new(Vec2::from_values(10, 7), None) }
 }

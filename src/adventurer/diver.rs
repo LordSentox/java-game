@@ -111,16 +111,17 @@ impl AdventurerInfo for Diver {
 mod test {
     use super::Diver;
     use crate::adventurer::AdventurerInfo;
-    use crate::map::{Full as MapFull, IslandTile, IslandTileState};
+    use crate::map::{Full as MapFull, IslandTile, IslandTileInfo, IslandTileState};
     use crate::math::Vec2;
+    use crate::positionable::Positionable;
 
     #[test]
     fn special_moves() {
-        let mut dry = IslandTile::new();
+        let mut dry = IslandTile::new(IslandTileInfo::BreakersBridge);
         dry.set_state(IslandTileState::Dry);
-        let mut flooded = IslandTile::new();
+        let mut flooded = IslandTile::new(IslandTileInfo::BronzeGate);
         flooded.set_state(IslandTileState::Flooded);
-        let mut gone = IslandTile::new();
+        let mut gone = IslandTile::new(IslandTileInfo::CaveOfAmbers);
         gone.set_state(IslandTileState::Gone);
 
         let map: MapFull = vec![
@@ -144,7 +145,8 @@ mod test {
         ]
         .into();
 
-        let diver = Diver::new(Vec2::from_values(0, 3));
+        let mut diver = Diver::new();
+        diver.set_pos(Vec2::from_values(0, 3));
         assert_eq!(
             vec![
                 Vec2::from_values(2, 0),
