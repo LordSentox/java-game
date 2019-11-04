@@ -59,3 +59,65 @@ impl Adventurer for Engineer {
 }
 
 impl AdventurerInfo for Engineer {}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::map::{Full as MapFull, IslandTile, IslandTileInfo, IslandTileState};
+    use crate::math::Vec2;
+
+    fn setup_drain_map() -> MapFull {
+        let mut flooded_tile = IslandTile::new(IslandTileInfo::TempleOfTheSun);
+        flooded_tile.set_state(IslandTileState::Flooded);
+
+        MapFull::new(Vec2::from_values(1, 1), Some(flooded_tile))
+    }
+
+    #[test]
+    fn drain_twice_correct_consume_amount() {
+        let mut engineer = Engineer::new();
+        let map = setup_drain_map();
+
+        let mut action_points = 2;
+        assert_eq!(
+            vec![Vec2::from_values(0, 0)],
+            Adventurer::drains(&engineer, &map, action_points)
+        );
+        Adventurer::on_drain(&mut engineer, &mut action_points);
+        assert_eq!(
+            vec![Vec2::from_values(0, 0)],
+            Adventurer::drains(&engineer, &map, action_points)
+        );
+        assert_eq!(1, action_points);
+        Adventurer::on_drain(&mut engineer, &mut action_points);
+        assert_eq!(
+            vec![Vec2::from_values(0, 0)],
+            Adventurer::drains(&engineer, &map, action_points)
+        );
+        assert_eq!(1, action_points);
+    }
+
+    #[test]
+    fn drain_twice_one_action_point() {
+        let mut engineer = Engineer::new();
+        let map = setup_drain_map();
+
+        let mut action_points = 1;
+        assert_eq!(
+            vec![Vec2::from_values(0, 0)],
+            Adventurer::drains(&engineer, &map, action_points)
+        );
+        Adventurer::on_drain(&mut engineer, &mut action_points);
+        assert_eq!(
+            vec![Vec2::from_values(0, 0)],
+            Adventurer::drains(&engineer, &map, action_points)
+        );
+        assert_eq!(0, action_points);
+        Adventurer::on_drain(&mut engineer, &mut action_points);
+        assert_eq!(
+            Vec::<FieldPos>::new(),
+            Adventurer::drains(&engineer, &map, action_points)
+        );
+        assert_eq!(0, action_points);
+    }
+}
