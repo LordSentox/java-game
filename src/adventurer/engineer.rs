@@ -120,4 +120,22 @@ mod test {
         );
         assert_eq!(0, action_points);
     }
+
+    #[test]
+    fn move_denies_extra_drain() {
+        let mut engineer = Engineer::new();
+        let map = setup_drain_map();
+
+        let mut action_points = 1;
+        assert_eq!(
+            vec![Vec2::from_values(0, 0)],
+            Adventurer::drains(&engineer, &map, action_points)
+        );
+        Adventurer::on_drain(&mut engineer, &mut action_points);
+        Adventurer::on_move(&mut engineer);
+        assert_eq!(
+            Vec::<FieldPos>::new(),
+            Adventurer::drains(&engineer, &map, action_points)
+        );
+    }
 }
