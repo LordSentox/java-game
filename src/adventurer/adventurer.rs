@@ -226,13 +226,38 @@ mod test {
         };
 
         let mut expected_drains = vec![adventurer.pos(), FieldPos::from_values(1, 1)];
-
         let mut actual_drains = Adventurer::drains(&adventurer, &map, 1);
 
         expected_drains.sort();
         actual_drains.sort();
 
         assert_eq!(expected_drains, actual_drains);
+        // Unable to drain, if there are no action points left
+        assert_eq!(
+            Vec::<FieldPos>::new(),
+            Adventurer::drains(&adventurer, &map, 0)
+        );
+    }
+
+    #[test]
+    fn on_drain_sub_points() {
+        let mut points = 2;
+        let mut adventurer = CaptainAwesome {
+            pos: FieldPos::from_values(2, 1)
+        };
+        Adventurer::on_drain(&mut adventurer, &mut points);
+
+        assert_eq!(1, points);
+    }
+
+    #[test]
+    #[should_panic]
+    fn on_drain_no_points() {
+        let mut points = 0;
+        let mut adventurer = CaptainAwesome {
+            pos: FieldPos::from_values(2, 1)
+        };
+        Adventurer::on_drain(&mut adventurer, &mut points);
     }
 
     #[test]
