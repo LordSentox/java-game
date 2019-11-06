@@ -271,6 +271,23 @@ mod test {
     }
 
     #[test]
+    fn can_trade_with() {
+        let mut a = CaptainAwesome {
+            pos: FieldPos::from_values(2, 2)
+        };
+        let b = CaptainAwesome {
+            pos: FieldPos::from_values(2, 2)
+        };
+
+        assert!(Adventurer::can_trade_with(&a, &b, 1));
+        assert!(!Adventurer::can_trade_with(&a, &b, 0));
+
+        a.set_pos(FieldPos::from_values(1, 2));
+        assert!(!Adventurer::can_trade_with(&a, &b, 1));
+        assert!(!Adventurer::can_trade_with(&a, &b, 0));
+    }
+
+    #[test]
     fn cover_untestable() {
         let mut adventurer = CaptainAwesome {
             pos: FieldPos::from_values(2, 2)
