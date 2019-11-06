@@ -34,7 +34,7 @@ impl AdventurerInfo for Pilot {
     fn special_moves(&self, map: &MapFull) -> Vec<FieldPos> {
         map.iter()
             .filter_map(|(pos, _)| {
-                if map.is_standable(pos) {
+                if map.is_standable(pos) && pos != self.pos() {
                     Some(pos)
                 }
                 else {
