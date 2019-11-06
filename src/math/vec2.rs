@@ -2,6 +2,7 @@ use alga::general::{Additive, ClosedAdd, ClosedSub, Identity, Multiplicative};
 use nalgebra::{RealField, Scalar};
 use num::{CheckedAdd, CheckedSub, Integer};
 use std::cmp::Ordering;
+use std::fmt;
 use std::ops::{Add, AddAssign, Div, Mul, Sub, SubAssign};
 
 use crate::direction::Direction;
@@ -230,6 +231,20 @@ impl<T: Scalar + Div<Output = T>> Div<T> for Vec2<T> {
 }
 
 // End of mathematical operators ----------------------------------------------
+
+// By default, the coordinates are first compared by their y-coordinates, then
+// their x-coordinates
+impl<T: fmt::Debug> Ord for Vec2<T>
+where
+    T: Ord + Copy + 'static
+{
+    fn cmp(&self, other: &Self) -> Ordering {
+        match self.y.cmp(&other.y) {
+            Ordering::Equal => self.x.cmp(&other.x),
+            y_order => y_order
+        }
+    }
+}
 
 // Helper function to determine the absolute positive difference between two
 // Values, which don't have to be signed.
