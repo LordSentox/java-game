@@ -44,3 +44,46 @@ impl AdventurerInfo for Pilot {
             .collect()
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::map::{IslandTile, IslandTileInfo, IslandTileState};
+    use crate::math::Vec2;
+
+    #[test]
+    fn special_moves() {
+        let pilot = Pilot::new();
+        let dry = IslandTile::new(IslandTileInfo::BreakersBridge);
+        let mut flooded = IslandTile::new(IslandTileInfo::FoolsLanding);
+        flooded.set_state(IslandTileState::Flooded);
+        let mut gone = IslandTile::new(IslandTileInfo::PhantomRock);
+        gone.set_state(IslandTileState::Gone);
+
+        let map = vec![
+            // Row one
+            vec![
+                Some(dry.clone()),
+                Some(gone.clone()),
+                Some(flooded.clone()),
+                Some(dry.clone()),
+            ],
+            // Row two
+            vec![None, None, Some(dry.clone()), Some(flooded.clone())],
+        ]
+        .into();
+
+        let mut expected_moves = vec![
+            Vec2::from_values(2, 0),
+            Vec2::from_values(3, 0),
+            Vec2::from_values(2, 1),
+            Vec2::from_values(3, 1),
+        ];
+        let mut actual_moves = AdventurerInfo::special_moves(&pilot, &map);
+
+        expected_moves.sort();
+        actual_moves.sort();
+
+        assert_eq!(expected_moves, actual_moves);
+    }
+}
