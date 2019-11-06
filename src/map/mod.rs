@@ -67,6 +67,17 @@ impl<T> Map<T> {
         }
     }
 
+    /// Get the item at the provided position of the map mutably or `None`, if
+    /// there is no item at the position.
+    pub fn get_mut(&mut self, pos: FieldPos) -> Option<&mut T> {
+        if let Some(line) = self.data.get_mut(pos.y as usize) {
+            line.get_mut(pos.x as usize)
+        }
+        else {
+            None
+        }
+    }
+
     /// Set the item at the provided position of the map. Returns the item that
     /// was there before.
     ///

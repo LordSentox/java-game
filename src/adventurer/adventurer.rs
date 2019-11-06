@@ -1,7 +1,7 @@
 //! Traits that describe the actions an Adventurer can take that may be unique
 //! to them.
 
-use crate::map::{Full as MapFull, MapExt};
+use crate::map::{Full as MapFull, IslandTileState, MapExt};
 use crate::math::Vec2;
 use crate::positionable::Positionable;
 
@@ -101,7 +101,14 @@ pub trait AdventurerInfo: Positionable {
         positions.push(self.pos());
         positions
             .into_iter()
-            .filter(|&pos| map.is_standable(pos))
+            .filter(|&pos| {
+                if let Some(tile) = map.get(pos).unwrap() {
+                    tile.state() == IslandTileState::Flooded
+                }
+                else {
+                    false
+                }
+            })
             .collect()
     }
 
@@ -202,13 +209,30 @@ mod test {
     }
 
     #[test]
-    fn cover_untestable() {
-        let mut adventurer = CaptainAwesome {
-            pos: FieldPos::from_values(2, 2)
+    fn drains() {
+        let mut map = map_all_moveable(Vec2::from_values(5, 5));
+        map.get_mut(FieldPos::from_values(2, 2))
+            .unwrap()
+            .as_mut()
+            .unwrap()
+            .set_state(IslandTileState::Gone);
+        map.get_mut(FieldPos::from_values(1, 1))
+            .unwrap()
+            .as_mut()
+            .unwrap()
+            .set_state(IslandTileState::Flooded);
+        let adventurer = CaptainAwesome {
+            pos: FieldPos::from_values(2, 1)
         };
 
-        adventurer.on_move();
-        assert!(!Adventurer::can_move_other(&adventurer, 3));
+        let mut expected_drains = vec![adventurer.pos(), FieldPos::from_values(1, 1)];
+
+        let mut actual_drains = Adventurer::drains(&adventurer, &map, 1);
+
+        expected_drains.sort();
+        actual_drains.sort();
+
+        assert_eq!(expected_drains, actual_drains);
     }
 
     #[test]
@@ -219,5 +243,15 @@ mod test {
         };
 
         adventurer.on_move_other(&mut 1);
+    }
+
+    #[test]
+    fn cover_untestable() {
+        let mut adventurer = CaptainAwesome {
+            pos: FieldPos::from_values(2, 2)
+        };
+
+        adventurer.on_move();
+        assert!(!Adventurer::can_move_other(&adventurer, 3));
     }
 }
