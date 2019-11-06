@@ -27,7 +27,14 @@ pub trait Adventurer: AdventurerInfo + Send + Sync {
         }
     }
 
-    fn special_moves(&self, _map: &MapFull, _act_points: u8) -> Vec<Vec2<u8>> { unimplemented!() }
+    fn special_moves(&self, map: &MapFull, act_points: u8) -> Vec<Vec2<u8>> {
+        if act_points != 0 {
+            AdventurerInfo::special_moves(self, &map)
+        }
+        else {
+            Vec::new()
+        }
+    }
 
     /// If something special should happen, when the adventurer moves, this
     /// needs to be implemented. Does not get the action points, since none
