@@ -46,7 +46,9 @@ pub trait Adventurer: AdventurerInfo + Send + Sync {
     /// When the adventurer has moved another this is called. Must be
     /// implemented, if something special should happen, like with the
     /// Navigator, which has to handle their extra push.
-    fn on_move_other(&mut self, _act_points: &mut u8) {}
+    fn on_move_other(&mut self, _act_points: &mut u8) {
+        panic!("Player moved someone else, but should not have that ability.")
+    }
 
     fn drains(&self, map: &MapFull, act_points: u8) -> Vec<Vec2<u8>> {
         if act_points != 0 {
@@ -160,5 +162,62 @@ mod test {
         actual_moves.sort();
 
         assert_eq!(expected_moves, actual_moves);
+    }
+
+    #[test]
+    fn default_moves_no_act_points() {
+        let map = map_all_moveable(Vec2::from_values(5, 5));
+        let adventurer = CaptainAwesome {
+            pos: FieldPos::from_values(2, 2)
+        };
+
+        let actual_moves = Adventurer::moves(&adventurer, &map, 0);
+        assert_eq!(Vec::<FieldPos>::new(), actual_moves);
+    }
+
+    #[test]
+    fn can_act() {
+        let adventurer = CaptainAwesome {
+            pos: FieldPos::from_values(2, 2)
+        };
+
+        assert!(adventurer.can_act(1));
+        assert!(!adventurer.can_act(0));
+    }
+
+    #[test]
+    fn special_moves() {
+        // Special moves should by default be empty, so return an empty Vec if
+        // the adventurer has action points as well as if they have
+        // none.
+        let map = map_all_moveable(Vec2::from_values(5, 5));
+        let adventurer = CaptainAwesome {
+            pos: FieldPos::from_values(2, 2)
+        };
+
+        let actual_moves = Adventurer::special_moves(&adventurer, &map, 1);
+        assert_eq!(Vec::<FieldPos>::new(), actual_moves);
+        let actual_moves = Adventurer::special_moves(&adventurer, &map, 0);
+        assert_eq!(Vec::<FieldPos>::new(), actual_moves);
+    }
+
+    #[test]
+    fn cover_untestable() {
+        let mut adventurer = CaptainAwesome {
+            pos: FieldPos::from_values(2, 2)
+        };
+
+        adventurer.on_move();
+        assert!(!Adventurer::can_move_other(&adventurer, 3));
+    }
+
+    #[test]
+    #[should_panic]
+    fn on_move_other() {
+        let mut adventurer = CaptainAwesome {
+            pos: FieldPos::from_values(2, 2)
+        };
+
+        adventurer.on_move_other(&mut 1);
     }
 }
