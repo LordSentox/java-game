@@ -95,3 +95,35 @@ impl IslandTile {
 
     pub fn info(&self) -> &IslandTileInfo { &self.info }
 }
+
+#[cfg(test)]
+mod test {
+    use crate::map::IslandTileInfo;
+    use crate::map::IslandTileInfo::*;
+    use crate::artefact_type::ArtefactType::*;
+    use crate::adventurer::AdventurerType::*;
+
+    #[test]
+    fn hidden_artefact() {
+        assert_eq!(CaveOfShadows.hidden_artefact(), Some(Fire));
+        assert_eq!(CaveOfAmbers.hidden_artefact(), Some(Fire));
+        assert_eq!(TempleOfTheMoon.hidden_artefact(), Some(Earth));
+        assert_eq!(TempleOfTheSun.hidden_artefact(), Some(Earth));
+        assert_eq!(WhisperingGarden.hidden_artefact(), Some(Air));
+        assert_eq!(HowlingGarden.hidden_artefact(), Some(Air));
+        assert_eq!(CoralPalace.hidden_artefact(), Some(Water));
+        assert_eq!(TidalPalace.hidden_artefact(), Some(Water));
+        assert_eq!(SilverGate.hidden_artefact(), None);
+    }
+
+    #[test]
+    fn player_spawn() {
+        assert_eq!(FoolsLanding.player_spawn(), Some(Pilot));
+        assert_eq!(GoldGate.player_spawn(), Some(Navigator));
+        assert_eq!(IronGate.player_spawn(), Some(Diver));
+        assert_eq!(BronzeGate.player_spawn(), Some(Engineer));
+        assert_eq!(CopperGate.player_spawn(), Some(Explorer));
+        assert_eq!(SilverGate.player_spawn(), Some(Courier));
+        assert_eq!(TempleOfTheSun.player_spawn(), None);
+    }
+}
