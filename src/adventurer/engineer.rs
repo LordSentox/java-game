@@ -15,9 +15,9 @@ pub struct Engineer {
 }
 
 impl Engineer {
-    pub fn new() -> Self {
+    pub fn new(pos: FieldPos) -> Self {
         Self {
-            pos: FieldPos::new(),
+            pos,
             extra_drain: false
         }
     }
@@ -59,6 +59,15 @@ impl Adventurer for Engineer {
 }
 
 impl AdventurerInfo for Engineer {}
+
+impl Default for Engineer {
+    fn default() -> Self {
+        Self {
+            pos: FieldPos::default(),
+            extra_drain: false
+        }
+    }
+}
 
 #[cfg(test)]
 mod test {

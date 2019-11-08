@@ -3,12 +3,12 @@
 use crate::map::FieldPos;
 
 pub struct Iter2d<'a, T> {
-    internal: &'a Vec<Vec<T>>,
+    internal: &'a [Vec<T>],
     pos:      FieldPos
 }
 
 impl<'a, T> Iter2d<'a, T> {
-    pub fn new(source: &'a Vec<Vec<T>>) -> Self {
+    pub fn new(source: &'a [Vec<T>]) -> Self {
         Self {
             internal: source,
             pos:      FieldPos::new()

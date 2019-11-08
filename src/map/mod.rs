@@ -99,7 +99,7 @@ impl<T> Map<T> {
 
     /// Amount of tiles in the x-direction.
     pub fn width(&self) -> u8 {
-        if self.data.len() == 0 {
+        if self.data.is_empty() {
             0
         }
         else {

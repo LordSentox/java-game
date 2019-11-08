@@ -17,9 +17,9 @@ pub struct Navigator {
 }
 
 impl Navigator {
-    pub fn new() -> Self {
+    pub fn new(pos: FieldPos) -> Self {
         Self {
-            pos: FieldPos::new(),
+            pos,
             extra_push: false
         }
     }
@@ -53,3 +53,12 @@ impl Adventurer for Navigator {
 }
 
 impl AdventurerInfo for Navigator {}
+
+impl Default for Navigator {
+    fn default() -> Self {
+        Self {
+            pos: FieldPos::default(),
+            extra_push: false
+        }
+    }
+}

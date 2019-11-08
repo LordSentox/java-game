@@ -40,7 +40,7 @@ pub fn reachable_positions(
                 None
             }
         },
-        |_, marker| if marker.is_some() { true } else { false }
+        |_, marker| marker.is_some()
     )
 }
 

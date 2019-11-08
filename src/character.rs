@@ -39,7 +39,7 @@ impl Character {
         sprite_sheet: Handle<SpriteSheet>
     ) -> Entity {
         // Position the character onto the map correctly it the adventurers spawn point
-        let pos = map.spawn_point(&self.adventurer_type);
+        let pos = map.spawn_point(self.adventurer_type);
         self.set_pos(pos);
 
         let renderer = SpriteRender {

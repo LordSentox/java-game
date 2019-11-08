@@ -15,11 +15,7 @@ pub struct Pilot {
 }
 
 impl Pilot {
-    pub fn new() -> Self {
-        Self {
-            pos: FieldPos::new()
-        }
-    }
+    pub fn new(pos: FieldPos) -> Self { Self { pos } }
 
     pub fn implicit_special() -> bool { false }
 
@@ -42,6 +38,14 @@ impl AdventurerInfo for Pilot {
                 }
             })
             .collect()
+    }
+}
+
+impl Default for Pilot {
+    fn default() -> Self {
+        Self {
+            pos: FieldPos::default()
+        }
     }
 }
 

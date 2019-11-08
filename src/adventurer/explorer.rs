@@ -7,17 +7,13 @@ use super::{Adventurer, AdventurerInfo};
 use crate::map::{Full as MapFull, MapExt};
 use crate::positionable::Positionable;
 
-#[derive(Positionable)]
+#[derive(Default, Positionable)]
 pub struct Explorer {
     pos: FieldPos
 }
 
 impl Explorer {
-    pub fn new() -> Self {
-        Self {
-            pos: FieldPos::new()
-        }
-    }
+    pub fn new(pos: FieldPos) -> Self { Self { pos } }
 
     pub fn implicit_special() -> bool { true }
 
