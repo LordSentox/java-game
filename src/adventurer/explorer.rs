@@ -50,7 +50,7 @@ mod test {
         map.set(Vec2::from_values(1, 1), Some(gone.clone()));
         map.set(Vec2::from_values(1, 3), None);
 
-        let mut explorer = Explorer::new();
+        let mut explorer = Explorer::default();
         explorer.set_pos(Vec2::from_values(2, 2));
 
         let mut expected_moves = vec![Vec2::from_values(3, 1), Vec2::from_values(3, 3)];

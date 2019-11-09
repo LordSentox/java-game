@@ -84,7 +84,7 @@ mod test {
 
     #[test]
     fn drain_twice_correct_consume_amount() {
-        let mut engineer = Engineer::new();
+        let mut engineer = Engineer::default();
         let map = setup_drain_map();
 
         let mut action_points = 2;
@@ -108,7 +108,7 @@ mod test {
 
     #[test]
     fn drain_twice_one_action_point() {
-        let mut engineer = Engineer::new();
+        let mut engineer = Engineer::default();
         let map = setup_drain_map();
 
         let mut action_points = 1;
@@ -132,7 +132,7 @@ mod test {
 
     #[test]
     fn move_denies_extra_drain() {
-        let mut engineer = Engineer::new();
+        let mut engineer = Engineer::default();
         let map = setup_drain_map();
 
         let mut action_points = 1;

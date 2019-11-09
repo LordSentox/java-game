@@ -57,7 +57,7 @@ mod test {
 
     #[test]
     fn special_moves() {
-        let pilot = Pilot::new();
+        let pilot = Pilot::default();
         let dry = IslandTile::new(IslandTileInfo::BreakersBridge);
         let mut flooded = IslandTile::new(IslandTileInfo::FoolsLanding);
         flooded.set_state(IslandTileState::Flooded);
