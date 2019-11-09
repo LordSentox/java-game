@@ -15,9 +15,12 @@ pub mod generate;
 pub mod island_tile;
 pub use self::island_tile::*;
 
+pub mod loader;
+
 use crate::iter_2d::Iter2d;
 use crate::math::{Rect, Vec2};
 use std::ops::{Deref, DerefMut};
+use serde::{Serialize, Deserialize};
 
 /// The number of tiles that are in a single map when it is valid. In later
 /// versions, this could vary.
@@ -40,7 +43,7 @@ pub trait MapExt {
     fn is_standable(&self, _pos: FieldPos) -> bool;
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Map<T> {
     data: Vec<Vec<T>>
 }
@@ -127,6 +130,28 @@ impl<T> Deref for Map<T> {
 
     fn deref(&self) -> &Self::Target { &self.data }
 }
+
 impl<T> DerefMut for Map<T> {
     fn deref_mut(&mut self) -> &mut Self::Target { &mut self.data }
+}
+
+impl<T: PartialEq> PartialEq for Map<T> {
+    fn eq(&self, other: &Self) -> bool {
+        // Check set equality by validating that all elements
+        // from set A are in B and vice versa
+
+        for elem in self.data.iter() {
+            if !other.data.contains(elem) {
+                return false;
+            }
+        }
+
+        for elem in other.data.iter() {
+            if !self.data.contains(elem) {
+                return false;
+            }
+        }
+
+        true
+    }
 }

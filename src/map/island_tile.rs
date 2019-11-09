@@ -1,9 +1,10 @@
 use amethyst::ecs::{Component, DenseVecStorage};
+use serde::{Serialize, Deserialize};
 
 use crate::adventurer::AdventurerType;
 use crate::artefact_type::ArtefactType;
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub enum IslandTileInfo {
     CaveOfShadows = 0,
     FoolsLanding,
@@ -32,7 +33,7 @@ pub enum IslandTileInfo {
 }
 
 /// The different states an island can be.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub enum IslandTileState {
     /// The island is dry. Players can freely do anything on these tiles.
     Dry,
@@ -47,7 +48,7 @@ pub enum IslandTileState {
 }
 
 /// Represents one of 24 island map tiles.
-#[derive(Clone, Component, Debug, PartialEq)]
+#[derive(Clone, Component, Debug, PartialEq, Serialize, Deserialize)]
 pub struct IslandTile {
     state: IslandTileState,
     info:  IslandTileInfo

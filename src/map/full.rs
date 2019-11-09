@@ -12,8 +12,9 @@ use amethyst::{
 };
 use nalgebra::Vector3;
 use std::ops::{Deref, DerefMut};
+use serde::{Serialize, Deserialize};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Full {
     map: Map<Option<IslandTile>>,
     transform: Transform
@@ -147,6 +148,12 @@ impl Deref for Full {
 
 impl DerefMut for Full {
     fn deref_mut(&mut self) -> &mut Self::Target { &mut self.map }
+}
+
+impl PartialEq for Full {
+    fn eq(&self, other: &Self) -> bool {
+        self.map == other.map
+    }
 }
 
 /// Graphics helper function to convert the field position in a map to the
