@@ -25,7 +25,7 @@ pub fn load_map(path: String) -> Result<Full, Error> {
 /// * `map` - The map to be saved
 /// 
 /// # Returns
-/// Ok<())> if the map could be saved, Err<Error> containing an IO error otherwise
+/// `Ok<())>` if the map could be saved, `Err<Error>` containing an IO error otherwise
 pub fn save_map(path: String, map: &Full) -> Result<(), Error> {
     let serialized = serde_json::to_string(map)?;
 

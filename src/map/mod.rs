@@ -19,6 +19,7 @@ pub mod loader;
 
 use crate::iter_2d::Iter2d;
 use crate::math::{Rect, Vec2};
+use crate::util::vec;
 use std::ops::{Deref, DerefMut};
 use serde::{Serialize, Deserialize};
 
@@ -135,23 +136,63 @@ impl<T> DerefMut for Map<T> {
     fn deref_mut(&mut self) -> &mut Self::Target { &mut self.data }
 }
 
+// TODO maybe this needs to be reworked at some point
+// (because it could be very slow and inefficient)
 impl<T: PartialEq> PartialEq for Map<T> {
     fn eq(&self, other: &Self) -> bool {
         // Check set equality by validating that all elements
         // from set A are in B and vice versa
 
-        for elem in self.data.iter() {
-            if !other.data.contains(elem) {
-                return false;
+        'self_loop: for vec_self in self.data.iter() {
+            for vec_other in other.data.iter() {
+                if vec::vec_equals(vec_self, vec_other) {
+                    // Continue if there is a vector that is equal to the current one
+                    continue 'self_loop;
+                }
             }
+
+            // Apparently there was no equal vector
+            return false;
         }
 
-        for elem in other.data.iter() {
-            if !self.data.contains(elem) {
-                return false;
+        'other_loop: for vec_other in other.data.iter() {
+            for vec_self in self.data.iter() {
+                if vec::vec_equals(vec_other, vec_self) {
+                    // Continue if there is a vector that is equal to the current one
+                    continue 'other_loop;
+                }
             }
+
+            // Apparently there was no equal vector
+            return false;
         }
 
         true
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn partial_eq_map_equals() {
+        let island_tile_a = IslandTile::new(IslandTileInfo::CaveOfShadows);
+        let island_tile_b = IslandTile::new(IslandTileInfo::CaveOfShadows);
+
+        let map_a = Map::new(Vec2::from_values(10, 10), Some(island_tile_a));
+        let map_b = Map::new(Vec2::from_values(10, 10), Some(island_tile_b));
+
+        assert_eq!(map_a, map_b);
+    }
+
+    fn partial_eq_map_not_equals() {
+        let island_tile_a = IslandTile::new(IslandTileInfo::CaveOfShadows);
+        let island_tile_b = IslandTile::new(IslandTileInfo::FoolsLanding);
+
+        let map_a = Map::new(Vec2::from_values(10, 10), Some(island_tile_a));
+        let map_b = Map::new(Vec2::from_values(10, 10), Some(island_tile_b));
+
+        assert_ne!(map_a, map_b);
     }
 }
