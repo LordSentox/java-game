@@ -24,7 +24,6 @@ pub mod math;
 pub mod positionable;
 pub mod state;
 pub mod system;
-pub mod util;
 pub mod water_level;
 
 use amethyst::{

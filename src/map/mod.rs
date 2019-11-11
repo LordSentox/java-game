@@ -19,9 +19,8 @@ pub mod loader;
 
 use crate::iter_2d::Iter2d;
 use crate::math::{Rect, Vec2};
-use crate::util::vec;
+use serde::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
-use serde::{Serialize, Deserialize};
 
 /// The number of tiles that are in a single map when it is valid. In later
 /// versions, this could vary.
@@ -44,7 +43,7 @@ pub trait MapExt {
     fn is_standable(&self, _pos: FieldPos) -> bool;
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Map<T> {
     data: Vec<Vec<T>>
 }
@@ -145,41 +144,6 @@ impl<T> Deref for Map<T> {
 
 impl<T> DerefMut for Map<T> {
     fn deref_mut(&mut self) -> &mut Self::Target { &mut self.data }
-}
-
-// TODO maybe this needs to be reworked at some point
-// (because it could be very slow and inefficient)
-impl<T: PartialEq> PartialEq for Map<T> {
-    fn eq(&self, other: &Self) -> bool {
-        // Check set equality by validating that all elements
-        // from set A are in B and vice versa
-
-        'self_loop: for vec_self in self.data.iter() {
-            for vec_other in other.data.iter() {
-                if vec::vec_equals(vec_self, vec_other) {
-                    // Continue if there is a vector that is equal to the current one
-                    continue 'self_loop;
-                }
-            }
-
-            // Apparently there was no equal vector
-            return false;
-        }
-
-        'other_loop: for vec_other in other.data.iter() {
-            for vec_self in self.data.iter() {
-                if vec::vec_equals(vec_other, vec_self) {
-                    // Continue if there is a vector that is equal to the current one
-                    continue 'other_loop;
-                }
-            }
-
-            // Apparently there was no equal vector
-            return false;
-        }
-
-        true
-    }
 }
 
 #[cfg(test)]
