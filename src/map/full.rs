@@ -43,7 +43,7 @@ impl MapExt for Map<Option<IslandTile>> {
         let mut max_pos = FieldPos::new();
 
         self.iter().for_each(|(pos, e)| {
-            if let Some(_) = e {
+            if e.is_some() {
                 min_pos.x = min_pos.x.min(pos.x);
                 min_pos.y = min_pos.y.min(pos.y);
                 max_pos.x = max_pos.x.max(pos.x);
@@ -109,12 +109,12 @@ impl Full {
     /// If the adventurer does not have a corresponding spawn tile. In a valid
     /// map, this should never happen, since if all tiles are present, all
     /// potential adventurers have spawn points.
-    pub fn spawn_point(&self, adventurer_type: &AdventurerType) -> FieldPos {
+    pub fn spawn_point(&self, adventurer_type: AdventurerType) -> FieldPos {
         self.iter()
             .find(|(_pos, tile)| {
                 if let Some(tile) = tile {
                     match tile.info().player_spawn() {
-                        Some(adventurer_spawn) => adventurer_type == &adventurer_spawn,
+                        Some(adventurer_spawn) => adventurer_type == adventurer_spawn,
                         _ => false
                     }
                 }

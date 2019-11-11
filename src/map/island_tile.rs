@@ -1,5 +1,5 @@
 use amethyst::ecs::{Component, DenseVecStorage};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::adventurer::AdventurerType;
 use crate::artefact_type::ArtefactType;
@@ -48,14 +48,14 @@ pub enum IslandTileState {
 }
 
 /// Represents one of 24 island map tiles.
-#[derive(Clone, Component, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Copy, Clone, Component, Debug, PartialEq, Serialize, Deserialize)]
 pub struct IslandTile {
     state: IslandTileState,
     info:  IslandTileInfo
 }
 
 impl IslandTileInfo {
-    pub fn hidden_artefact(&self) -> Option<ArtefactType> {
+    pub fn hidden_artefact(self) -> Option<ArtefactType> {
         match self {
             Self::CaveOfShadows => Some(ArtefactType::Fire),
             Self::CaveOfAmbers => Some(ArtefactType::Fire),
@@ -69,7 +69,7 @@ impl IslandTileInfo {
         }
     }
 
-    pub fn player_spawn(&self) -> Option<AdventurerType> {
+    pub fn player_spawn(self) -> Option<AdventurerType> {
         match self {
             Self::FoolsLanding => Some(AdventurerType::Pilot),
             Self::GoldGate => Some(AdventurerType::Navigator),
@@ -90,7 +90,7 @@ impl IslandTile {
         }
     }
 
-    pub fn state(&self) -> IslandTileState { self.state }
+    pub fn state(self) -> IslandTileState { self.state }
 
     pub fn set_state(&mut self, state: IslandTileState) { self.state = state; }
 

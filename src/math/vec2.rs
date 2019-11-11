@@ -27,7 +27,7 @@ impl<T: Scalar> Vec2<T> {
 
     pub fn from_values(x: T, y: T) -> Vec2<T> { Vec2 { x, y } }
 
-    pub fn len(&self) -> T
+    pub fn length(&self) -> T
     where
         T: RealField
     {
@@ -36,30 +36,26 @@ impl<T: Scalar> Vec2<T> {
 
     pub fn primary_direction(&self, to: Self) -> Option<Direction>
     where
-        T: ClosedSub + PartialOrd + Identity<Additive>
+        T: ClosedSub + Ord + Identity<Additive>
     {
         let diff_abs =
             Self::from_values(difference_abs(self.x, to.x), difference_abs(self.y, to.y));
 
-        // Lateral movement
-        if diff_abs.x > diff_abs.y {
-            match self.x.partial_cmp(&to.x) {
+        match diff_abs.x.cmp(&diff_abs.y) {
+            // Lateral movement
+            Ordering::Greater => match self.x.partial_cmp(&to.x) {
                 Some(Ordering::Less) => Some(Direction::Right),
                 Some(Ordering::Greater) => Some(Direction::Left),
                 _ => None
-            }
-        }
-        // Vertical movement
-        else if diff_abs.y > diff_abs.x {
-            match self.y.partial_cmp(&to.y) {
+            },
+            // Vertical movement
+            Ordering::Less => match self.y.partial_cmp(&to.y) {
                 Some(Ordering::Less) => Some(Direction::Down),
                 Some(Ordering::Greater) => Some(Direction::Up),
                 _ => None
-            }
-        }
-        // Not discernable if it should be lateral or vertical
-        else {
-            None
+            },
+            // Not discernable if it should be lateral or vertical
+            Ordering::Equal => None
         }
     }
 

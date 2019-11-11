@@ -107,6 +107,14 @@ impl AdventurerInfo for Diver {
     }
 }
 
+impl Default for Diver {
+    fn default() -> Self {
+        Self {
+            pos: FieldPos::default()
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::Diver;

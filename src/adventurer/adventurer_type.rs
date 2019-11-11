@@ -25,14 +25,14 @@ pub enum AdventurerType {
 
 impl AdventurerType {
     /// Create a new adventurer corresponding to this adventurer type
-    pub fn create(&self) -> Box<dyn Adventurer> {
+    pub fn create(self) -> Box<dyn Adventurer> {
         match self {
-            Self::Courier => Box::new(Courier::new()),
-            Self::Diver => Box::new(Diver::new()),
-            Self::Engineer => Box::new(Engineer::new()),
-            Self::Explorer => Box::new(Explorer::new()),
-            Self::Navigator => Box::new(Navigator::new()),
-            Self::Pilot => Box::new(Pilot::new())
+            Self::Courier => Box::new(Courier::default()),
+            Self::Diver => Box::new(Diver::default()),
+            Self::Engineer => Box::new(Engineer::default()),
+            Self::Explorer => Box::new(Explorer::default()),
+            Self::Navigator => Box::new(Navigator::default()),
+            Self::Pilot => Box::new(Pilot::default())
         }
     }
 
@@ -40,8 +40,8 @@ impl AdventurerType {
     /// special ability of the adventurer. This does not mean the
     /// special_moves function should be omitted when querying for all
     /// movement options.
-    fn implicit_special(&self) -> bool { call_func!(&self, implicit_special) }
+    fn implicit_special(self) -> bool { call_func!(&self, implicit_special) }
 
     /// Returns if the player is in principle capable of moving others.
-    fn can_move_others(&self) -> bool { call_func!(&self, can_move_others) }
+    fn can_move_others(self) -> bool { call_func!(&self, can_move_others) }
 }

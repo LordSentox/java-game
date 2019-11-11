@@ -13,11 +13,7 @@ pub struct Courier {
 }
 
 impl Courier {
-    pub fn new() -> Self {
-        Self {
-            pos: FieldPos::new()
-        }
-    }
+    pub fn new(pos: FieldPos) -> Self { Self { pos } }
 
     pub fn implicit_special() -> bool { true }
 
@@ -30,4 +26,12 @@ impl AdventurerInfo for Courier {
     /// The Courier can trade with anyone, no matter the position, so this
     /// function always returns true.
     fn can_trade_with(&self, _other: &dyn Positionable) -> bool { true }
+}
+
+impl Default for Courier {
+    fn default() -> Self {
+        Self {
+            pos: FieldPos::default()
+        }
+    }
 }

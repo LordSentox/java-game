@@ -15,9 +15,9 @@ pub struct Engineer {
 }
 
 impl Engineer {
-    pub fn new() -> Self {
+    pub fn new(pos: FieldPos) -> Self {
         Self {
-            pos: FieldPos::new(),
+            pos,
             extra_drain: false
         }
     }
@@ -60,6 +60,15 @@ impl Adventurer for Engineer {
 
 impl AdventurerInfo for Engineer {}
 
+impl Default for Engineer {
+    fn default() -> Self {
+        Self {
+            pos: FieldPos::default(),
+            extra_drain: false
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -75,7 +84,7 @@ mod test {
 
     #[test]
     fn drain_twice_correct_consume_amount() {
-        let mut engineer = Engineer::new();
+        let mut engineer = Engineer::default();
         let map = setup_drain_map();
 
         let mut action_points = 2;
@@ -99,7 +108,7 @@ mod test {
 
     #[test]
     fn drain_twice_one_action_point() {
-        let mut engineer = Engineer::new();
+        let mut engineer = Engineer::default();
         let map = setup_drain_map();
 
         let mut action_points = 1;
@@ -123,7 +132,7 @@ mod test {
 
     #[test]
     fn move_denies_extra_drain() {
-        let mut engineer = Engineer::new();
+        let mut engineer = Engineer::default();
         let map = setup_drain_map();
 
         let mut action_points = 1;

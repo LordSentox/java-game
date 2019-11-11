@@ -41,7 +41,7 @@ impl WaterLevel {
     /// phase to create the starting state for it. It can not be used to
     /// create the next state when a card has been taken from the flood card
     /// stack.
-    pub fn create_flood_state(&self) -> ActionState {
+    pub fn create_flood_state(self) -> ActionState {
         ActionState::DrawFloodCards(self.draw_amount())
     }
 
@@ -49,7 +49,7 @@ impl WaterLevel {
     /// water being at the level that it is. If the game has already been
     /// lost it returns a ridiculously high amount of cards that should be
     /// drawn.
-    pub fn draw_amount(&self) -> u8 {
+    pub fn draw_amount(self) -> u8 {
         match self.level {
             0 | 1 => 2,
             2..=4 => 3,
@@ -62,7 +62,7 @@ impl WaterLevel {
     /// Check if the water level is too high. Returns true, if the game has been
     /// lost because of it, false otherwise. Note that this does not exclude
     /// the possibility of the game being lost because of other means.
-    pub fn game_lost(&self) -> bool { self.level >= LOOSING_WATER_LEVEL }
+    pub fn game_lost(self) -> bool { self.level >= LOOSING_WATER_LEVEL }
 
     pub fn into_entity(self, _pos: Vec2<f32>, _world: &mut World) -> Entity { unimplemented!() }
 }
