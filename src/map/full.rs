@@ -11,8 +11,8 @@ use amethyst::{
     renderer::SpriteRender
 };
 use nalgebra::Vector3;
+use serde::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
-use serde::{Serialize, Deserialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Full {
@@ -151,9 +151,7 @@ impl DerefMut for Full {
 }
 
 impl PartialEq for Full {
-    fn eq(&self, other: &Self) -> bool {
-        self.map == other.map
-    }
+    fn eq(&self, other: &Self) -> bool { self.map == other.map }
 }
 
 /// Graphics helper function to convert the field position in a map to the
@@ -177,6 +175,52 @@ pub fn calculate_field_translation(map_transform: &Transform, field_pos: FieldPo
 mod test {
     use super::*;
     use crate::map::IslandTileInfo;
+    use std::mem;
+
+    #[test]
+    fn spawn_point_valid() {
+        let mut map = Full::new(Vec2::from_values(6, 4), None);
+        map.transform_mut().set_translation_xyz(64., 64., -1.);
+        for y in 0..4 {
+            for x in 0..6 {
+                let tile_info: IslandTileInfo = unsafe { mem::transmute(y * 6 + x) };
+                map.set(Vec2::from_values(x, y), Some(IslandTile::new(tile_info)));
+            }
+        }
+
+        assert_eq!(
+            Vec2::from_values(4, 2),
+            map.spawn_point(AdventurerType::Courier)
+        );
+        assert_eq!(
+            Vec2::from_values(1, 2),
+            map.spawn_point(AdventurerType::Diver)
+        );
+        assert_eq!(
+            Vec2::from_values(2, 2),
+            map.spawn_point(AdventurerType::Engineer)
+        );
+        assert_eq!(
+            Vec2::from_values(3, 2),
+            map.spawn_point(AdventurerType::Explorer)
+        );
+        assert_eq!(
+            Vec2::from_values(0, 2),
+            map.spawn_point(AdventurerType::Navigator)
+        );
+        assert_eq!(
+            Vec2::from_values(1, 0),
+            map.spawn_point(AdventurerType::Pilot)
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn spawn_point_not_found() {
+        let map = Full::new(Vec2::from_values(100, 100), None);
+
+        map.spawn_point(AdventurerType::Pilot);
+    }
 
     #[test]
     fn cover_untestable() {
