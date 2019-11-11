@@ -165,3 +165,20 @@ pub fn calculate_field_translation(map_transform: &Transform, field_pos: FieldPo
 
     Vec2::from_values(transform.translation().x, transform.translation().y)
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::map::IslandTileInfo;
+
+    #[test]
+    fn cover_untestable() {
+        let mut map = Full::new(
+            Vec2::from_values(4, 6),
+            Some(IslandTile::new(IslandTileInfo::BreakersBridge))
+        );
+
+        map.transform();
+        map.transform_mut();
+    }
+}
