@@ -15,8 +15,11 @@ pub mod generate;
 pub mod island_tile;
 pub use self::island_tile::*;
 
+pub mod loader;
+
 use crate::iter_2d::Iter2d;
 use crate::math::{Rect, Vec2};
+use serde::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 
 /// The number of tiles that are in a single map when it is valid. In later
@@ -40,7 +43,7 @@ pub trait MapExt {
     fn is_standable(&self, _pos: FieldPos) -> bool;
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Map<T> {
     data: Vec<Vec<T>>
 }
@@ -138,6 +141,33 @@ impl<T> Deref for Map<T> {
 
     fn deref(&self) -> &Self::Target { &self.data }
 }
+
 impl<T> DerefMut for Map<T> {
     fn deref_mut(&mut self) -> &mut Self::Target { &mut self.data }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn partial_eq_map_equals() {
+        let island_tile_a = IslandTile::new(IslandTileInfo::CaveOfShadows);
+        let island_tile_b = IslandTile::new(IslandTileInfo::CaveOfShadows);
+
+        let map_a = Map::new(Vec2::from_values(10, 10), Some(island_tile_a));
+        let map_b = Map::new(Vec2::from_values(10, 10), Some(island_tile_b));
+
+        assert_eq!(map_a, map_b);
+    }
+
+    fn partial_eq_map_not_equals() {
+        let island_tile_a = IslandTile::new(IslandTileInfo::CaveOfShadows);
+        let island_tile_b = IslandTile::new(IslandTileInfo::FoolsLanding);
+
+        let map_a = Map::new(Vec2::from_values(10, 10), Some(island_tile_a));
+        let map_b = Map::new(Vec2::from_values(10, 10), Some(island_tile_b));
+
+        assert_ne!(map_a, map_b);
+    }
 }
