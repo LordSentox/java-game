@@ -42,6 +42,7 @@ mod tests {
     use super::*;
 
     use super::super::*;
+    use std::env;
 
     #[test]
     fn save_load_map() {
@@ -51,10 +52,14 @@ mod tests {
         let full = Full::new(Vec2::from_values(10, 10), Some(island_tile));
 
         // Save and load map
-        save_map(String::from("test_save_load_map.maptmp"), &full).expect("Could not save the map");
+        save_map(
+            env::temp_dir().join(String::from("test_save_load_map.maptmp")),
+            &full
+        )
+        .expect("Could not save the map");
 
-        let full_loaded =
-            load_map(String::from("test_save_load_map.maptmp")).expect("Could not load the map");
+        let full_loaded = load_map(env::temp_dir().join(String::from("test_save_load_map.maptmp")))
+            .expect("Could not load the map");
 
         // Make sure that original map and saved/loaded map are the same
         assert_eq!(full, full_loaded);
