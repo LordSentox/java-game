@@ -1,5 +1,6 @@
 use std::fs;
 use std::io::Error;
+use std::path::Path;
 
 use super::full::Full;
 
@@ -11,7 +12,7 @@ use super::full::Full;
 /// # Returns
 /// Ok<Map> if the map could be loaded, Err<Error> containing an IO error
 /// otherwise
-pub fn load_map(path: String) -> Result<Full, Error> {
+pub fn load_map<P: AsRef<Path>>(path: P) -> Result<Full, Error> {
     let file_str = &fs::read_to_string(path)?;
 
     let deserialized: Full = serde_json::from_str(file_str)?;
@@ -28,7 +29,7 @@ pub fn load_map(path: String) -> Result<Full, Error> {
 /// # Returns
 /// `Ok<())>` if the map could be saved, `Err<Error>` containing an IO error
 /// otherwise
-pub fn save_map(path: String, map: &Full) -> Result<(), Error> {
+pub fn save_map<P: AsRef<Path>>(path: P, map: &Full) -> Result<(), Error> {
     let serialized = serde_json::to_string(map)?;
 
     fs::write(path, serialized)?;
